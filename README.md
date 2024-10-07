@@ -1,7 +1,7 @@
 # AI-Enabled-GPA-System
 
 
-**DESCRIPTION**
+**DESCRIPTION** /n
 The University of Technology is desirous of having a program created using Python and Prolog. The
 program run will be carried out by the Innovate10X robot. The program will facilitate the generation
 of reports/alerts that provide information regarding students who are close to having a GPA of 2.0. A
