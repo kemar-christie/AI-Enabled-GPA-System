@@ -1,0 +1,60 @@
+CREATE TABLE student (
+    stdID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL CHECK (LENGTH(password) >= 8 AND 
+                                        password REGEXP '[A-Z]' AND 
+                                        password REGEXP '[a-z]' AND 
+                                        password REGEXP '[0-9]'),
+    email_address VARCHAR(255) NOT NULL,
+    school VARCHAR(100),
+    programme VARCHAR(255)
+) AUTO_INCREMENT=2400000;
+
+
+
+CREATE TABLE Module (
+    moduleID VARCHAR(20) PRIMARY KEY,
+    moduleName VARCHAR(255),
+    num_of_credits INT CHECK (num_of_credits <= 4)
+);
+
+
+
+CREATE TABLE Enroll (
+    stdID INT NOT NULL,
+    moduleID VARCHAR(20) NOT NULL,
+    semester INT CHECK (semester <= 3),
+    year VARCHAR(10),
+    grade VARCHAR(5),
+    PRIMARY KEY (stdID, moduleID, semester, year),
+    FOREIGN KEY (stdID) REFERENCES Student(stdID),
+    FOREIGN KEY (moduleID) REFERENCES Module(moduleID)
+);
+
+
+
+CREATE TABLE alert (
+    stdID INT PRIMARY KEY,
+    faculty_admin_email VARCHAR(255),
+    faculty_admin_name VARCHAR(100),
+    advisor_name VARCHAR(100),
+    advisor_email VARCHAR(255),
+    prog_dir_name VARCHAR(100),
+    prog_dir_email VARCHAR(255),
+    date_alert_sent DATE,
+    FOREIGN KEY (stdID) REFERENCES student(stdID)
+);
+
+
+
+CREATE TABLE admin (
+    adminID VARCHAR(20) PRIMARY KEY,
+    admin_fname VARCHAR(50) NOT NULL,
+    admin_lname VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL CHECK (
+        LENGTH(password) >= 8 AND 
+        password REGEXP '[A-Z]' AND 
+        password REGEXP '[a-z]' AND 
+        password REGEXP '[0-9]'
+    )
+);
