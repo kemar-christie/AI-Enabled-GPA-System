@@ -27,7 +27,7 @@ CREATE TABLE Enroll (
     year VARCHAR(10),
     grade VARCHAR(5),
     PRIMARY KEY (stdID, moduleID, semester, year),
-    FOREIGN KEY (stdID) REFERENCES Student(stdID),
+    FOREIGN KEY (stdID) REFERENCES student(stdID),
     FOREIGN KEY (moduleID) REFERENCES Module(moduleID)
 );
 
