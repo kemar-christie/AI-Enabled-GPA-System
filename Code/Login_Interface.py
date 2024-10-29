@@ -27,8 +27,7 @@ def validateLoginDetails():
 
 root = tk.Tk()
 
-
-root.geometry("400x300")
+root.geometry("600x600")
 root.title("Academic Probation Login")
 
 # Set the background color of the root window to white
@@ -49,14 +48,18 @@ def verifyLoginDetails(id,password,userType):
     #if a corresponding record could or could not be found then the user will be alerted with a popup message
     if result == False:
        messagebox.showerror("Validation Error", "Invalid Credentials")
-    elif result == True:
+    elif result == True :
+        
         messagebox.showinfo("Confirmation Message", "You have logged in successfully")
                 # Clear the current frame and replace it with the admin navbar
-        for widget in root.winfo_children():  # Remove all widgets in the current window
-            widget.destroy()  # Destroy each widget
 
-        admin_frame = adminNav.admin_navbar(root)  # Create the new admin navbar frame
-        admin_frame.pack(expand=True)  # Pack the new frame
+        #if a person has successfully login as admin then they will see the dashboard
+        if userType =='Admin':
+            for widget in root.winfo_children():  # Remove all widgets in the current window
+                widget.destroy()  # Destroy each widget
+
+            admin_frame = adminNav.admin_navbar(root)  # Create the new admin navbar frame
+            admin_frame.pack(expand=True)  # Pack the new frame
 
 
 frame = tk.Frame(root,bg="white")

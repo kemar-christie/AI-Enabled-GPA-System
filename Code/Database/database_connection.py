@@ -16,5 +16,3 @@ def get_db_connection():
         print(f"Error connecting to the database: {e}")
         return None
     
-
-    
