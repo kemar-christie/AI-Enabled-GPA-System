@@ -44,6 +44,6 @@ default_gpa(2.0).
 
 % Rule to update the default GPA
 update_default_gpa(NewGPA) :-
-    retract(default_gpa(_)),        % Remove the current default GPA
-    assert(default_gpa(NewGPA)).     % Set the new default GPA
+    retract(default_gpa(_)),      % Remove the current default GPA
+    assert(default_gpa(NewGPA)).  % Set the new default GPA
 
