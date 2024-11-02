@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
+import tkinter.messagebox as messagebox
 
 def get_db_connection():
     try:
@@ -13,6 +14,7 @@ def get_db_connection():
             return dbConn
     except Error as e:
         # Print an error message if the connection failed
-        print(f"Error connecting to the database: {e}")
+        #F-strings allow you to embed expressions inside string literals by enclosing them in curly braces {}
+        messagebox.showerror("Validation Error", f"Error connecting to the database: {e}")
         return None
     

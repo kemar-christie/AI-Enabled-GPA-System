@@ -3,6 +3,7 @@
 import tkinter as tk
 import admin_add_student as adminAddStd
 
+
 def show_add_student(frame, root):
     # Destroy the current frame (navbar) before loading the new one
     frame.destroy()
