@@ -1,7 +1,9 @@
+DROP TABLE IF EXISTS admin, alert, enroll, student, module;
+
 CREATE TABLE student (
     stdID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
-    password VARCHAR(100) NOT NULL CHECK (LENGTH(password) >= 8 AND 
+    password VARCHAR(100) NOT NULL CHECK (CHAR_LENGTH(password) >= 8 AND 
                                         password REGEXP '[A-Z]' AND 
                                         password REGEXP '[a-z]' AND 
                                         password REGEXP '[0-9]'),
@@ -10,17 +12,13 @@ CREATE TABLE student (
     programme VARCHAR(255)
 ) AUTO_INCREMENT=2400000;
 
-
-
-CREATE TABLE Module (
+CREATE TABLE module (
     moduleID VARCHAR(20) PRIMARY KEY,
     moduleName VARCHAR(255),
     num_of_credits INT CHECK (num_of_credits <= 4)
 );
 
-
-
-CREATE TABLE Enroll (
+CREATE TABLE enroll (
     stdID INT NOT NULL,
     moduleID VARCHAR(20) NOT NULL,
     semester INT CHECK (semester <= 3),
@@ -28,33 +26,44 @@ CREATE TABLE Enroll (
     grade VARCHAR(5),
     PRIMARY KEY (stdID, moduleID, semester, year),
     FOREIGN KEY (stdID) REFERENCES student(stdID),
-    FOREIGN KEY (moduleID) REFERENCES Module(moduleID)
+    FOREIGN KEY (moduleID) REFERENCES module(moduleID)
 );
-
-
 
 CREATE TABLE alert (
     stdID INT PRIMARY KEY,
-    faculty_admin_email VARCHAR(255),
-    faculty_admin_name VARCHAR(100),
-    advisor_name VARCHAR(100),
-    advisor_email VARCHAR(255),
-    prog_dir_name VARCHAR(100),
-    prog_dir_email VARCHAR(255),
-    date_alert_sent DATE,
+    faculty_admin_email VARCHAR(255) NOT NULL,
+    faculty_admin_name VARCHAR(100) NOT NULL,
+    advisor_name VARCHAR(100) NOT NULL,
+    advisor_email VARCHAR(255) NOT NULL,
+    prog_dir_name VARCHAR(100) NOT NULL,
+    prog_dir_email VARCHAR(255) NOT NULL,
     FOREIGN KEY (stdID) REFERENCES student(stdID)
 );
 
-
-
-CREATE TABLE admin (
-    adminID VARCHAR(20) PRIMARY KEY,
-    admin_fname VARCHAR(50) NOT NULL,
-    admin_lname VARCHAR(50) NOT NULL,
+CREATE TABLE admin ( 
+    adminID VARCHAR(20) PRIMARY KEY, 
+    admin_fullname VARCHAR(50) NOT NULL, 
     password VARCHAR(100) NOT NULL CHECK (
-        LENGTH(password) >= 8 AND 
+        CHAR_LENGTH(password) >= 8 AND 
         password REGEXP '[A-Z]' AND 
         password REGEXP '[a-z]' AND 
         password REGEXP '[0-9]'
     )
 );
+
+
+
+INSERT INTO `student` (`stdID`, `full_name`, `password`, `email_address`, `school`, `programme`) VALUES
+(2400000, 'Alice Johnson', 'Stud3nt0', 'alice.johnson@example.com', 'SCIT', 'Computing'),
+(2400001, 'Bob Smith', 'Stud3nt1', 'bob.smith@example.com', 'Utech', 'Business Administration'),
+(2400002, 'Charlie Brown', 'Stud3nt2', 'charlie.brown@example.com', 'SOHT', 'Engineering'),
+(2400003, 'Diana Prince', 'Stud3nt3', 'diana.prince@example.com', 'SBLM', 'Arts'),
+(2400004, 'Ethan Hunt', 'Stud3nt4', 'ethan.hunt@example.com', 'SCIT', 'Information Technology');
+
+
+INSERT INTO `admin` (`adminID`, `admin_fullname`, `password`) VALUES
+('adm1', 'John Doe', 'P@ssw0rd1'),
+('adm2', 'Jane Smith', 'P@ssw0rd2'),
+('adm3', 'Emily Johnson', 'P@ssw0rd3'),
+('adm4', 'Michael Williams', 'P@ssw0rd4'),
+('adm5', 'Sarah Brown', 'P@ssw0rd5');
