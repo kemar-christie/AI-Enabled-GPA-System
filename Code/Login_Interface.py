@@ -5,6 +5,12 @@ import tkinter.messagebox as messagebox
 
 #functions
 
+# Function to clear username and password fields
+def clearFields(usernameEntry, passwordEntry):
+    usernameEntry.delete(0, 'end')
+    passwordEntry.delete(0, 'end')
+
+
 def validateLoginDetails(usernameEntry,passwordEntry,dropdown,root,frame):
     id = usernameEntry.get().strip()
     password = passwordEntry.get().strip()
@@ -97,7 +103,7 @@ def login_interface(root):
     bottom_border.grid(row=7, column=0, pady=(0, 15), columnspan=2)
 
     # Clear and Submit buttons
-    clearButton = tk.Button(frame,text="Clear", font=("Arial", 12),padx=20,bg="#007bff",fg="white",width=6)
+    clearButton = tk.Button(frame,text="Clear", font=("Arial", 12),padx=20,bg="#007bff",fg="white",width=6, command= lambda:clearFields(usernameEntry,passwordEntry))
     clearButton.grid(row=8, column=0,sticky="w")
 
     submitButton = tk.Button(frame, text="Submit",font=("Arial", 12), padx=20, bg="#007bff",fg="white", width=6, command= lambda:validateLoginDetails(usernameEntry,passwordEntry,dropdown,root,frame))
