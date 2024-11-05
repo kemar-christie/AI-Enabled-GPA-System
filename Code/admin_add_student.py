@@ -1,10 +1,21 @@
 import tkinter as tk
 import tkinter.ttk as ttk  # Import ttk for styling
-import tkinter.messagebox as messagebox
-import re  # Importing regex for password validation
-import Database.admin_Actions as adminAction
 
 
+
+def clearAll(fullNameEntry, emailEntry, passwordEntry, schoolEntry, programmeEntry,advNameEntry, advEmailEntry, progDirNameEntry, progDirEmailEntry, facAdminNameEntry, facAdminEmailEntry):
+    # Clear all entry fields
+    fullNameEntry.delete(0, tk.END)
+    emailEntry.delete(0, tk.END)
+    passwordEntry.delete(0, tk.END)
+    schoolEntry.delete(0, tk.END)
+    programmeEntry.delete(0, tk.END)
+    advNameEntry.delete(0, tk.END)
+    advEmailEntry.delete(0, tk.END)
+    progDirNameEntry.delete(0, tk.END)
+    progDirEmailEntry.delete(0, tk.END)
+    facAdminNameEntry.delete(0, tk.END)
+    facAdminEmailEntry.delete(0, tk.END)
 
 def validation( fullNameEntry, emailEntry, passwordEntry, schoolEntry, programmeEntry,advNameEntry, advEmailEntry, progDirNameEntry, progDirEmailEntry, facAdminNameEntry, facAdminEmailEntry):
     fullName = fullNameEntry.get().strip()
@@ -19,11 +30,12 @@ def validation( fullNameEntry, emailEntry, passwordEntry, schoolEntry, programme
     facAdminName=facAdminNameEntry.get().strip()
     facAdminEmail=facAdminEmailEntry.get().strip()
 
+    import re  # Importing regex for password validation
 
     validationMessage = ''
     # Regular expression for validating an Email
     regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-
+    
     if fullName == '':
         validationMessage += "• First name field is empty\n"
     if email=='':
@@ -70,23 +82,22 @@ def validation( fullNameEntry, emailEntry, passwordEntry, schoolEntry, programme
 
     if validationMessage != '':
         # Display validation messages in a messagebox
+        import tkinter.messagebox as messagebox
         messagebox.showerror("Validation Error", validationMessage)
     else:
+
+        import Database.admin_Actions as adminAction
         adminAction.add_student_and_alert(fullName,email,password,school,programme,advName,advEmail,progDirName,progDirEmail,facAdminEmail,facAdminName)
         
-        # Clear all entry fields
-        fullNameEntry.delete(0, tk.END)
-        emailEntry.delete(0, tk.END)
-        passwordEntry.delete(0, tk.END)
-        schoolEntry.delete(0, tk.END)
-        programmeEntry.delete(0, tk.END)
-        advNameEntry.delete(0, tk.END)
-        advEmailEntry.delete(0, tk.END)
-        progDirNameEntry.delete(0, tk.END)
-        progDirEmailEntry.delete(0, tk.END)
-        facAdminNameEntry.delete(0, tk.END)
-        facAdminEmailEntry.delete(0, tk.END)
+        #clear all data in the field
+        clearAll(fullNameEntry, emailEntry, passwordEntry, schoolEntry, programmeEntry,advNameEntry, advEmailEntry, progDirNameEntry, progDirEmailEntry, facAdminNameEntry, facAdminEmailEntry)
         
+def backToMenu(frame,root):
+    # Destroy the current frame (navbar) before loading the new one
+    frame.destroy()
+    #Displays the admin menu
+    import admin_navbar as adminNav
+    adminNav.admin_navbar(root)
 
 def addAdminInterface(root):
 
@@ -144,10 +155,10 @@ def addAdminInterface(root):
     label.grid(row=8, column=1,sticky="w")
 
     advNameEntry = tk.Entry(frame,width=20,bd=1, relief="solid",background="#f0f0f0")
-    advNameEntry.grid(row=9, column=0,pady=(0,20), padx=(0,10),sticky="w")
+    advNameEntry.grid(row=9, column=0,pady=(0,20),sticky="w")
 
     advEmailEntry = tk.Entry(frame,width=20,bd=1, relief="solid",background="#f0f0f0")
-    advEmailEntry.grid(row=9, column=1,pady=(0,20) ,padx=(0,10),sticky="w")
+    advEmailEntry.grid(row=9, column=1,pady=(0,20) ,sticky="w")
 
     #Program Director
 
@@ -158,10 +169,10 @@ def addAdminInterface(root):
     label.grid(row=10, column=1,sticky="w")
 
     progDirNameEntry = tk.Entry(frame,width=20,bd=1, relief="solid",background="#f0f0f0")
-    progDirNameEntry.grid(row=11, column=0,pady=(0,20) , padx=(0,10),sticky="w")
+    progDirNameEntry.grid(row=11, column=0,pady=(0,20) ,sticky="w")
 
     progDirEmailEntry = tk.Entry(frame,width=20,bd=1, relief="solid",background="#f0f0f0")
-    progDirEmailEntry.grid(row=11, column=1,pady=(0,20) , padx=(0,10),sticky="w")
+    progDirEmailEntry.grid(row=11, column=1,pady=(0,20),sticky="w")
 
     #Faculty Admin
 
@@ -172,21 +183,24 @@ def addAdminInterface(root):
     label.grid(row=12, column=1,sticky="w")
 
     facAdminNameEntry = tk.Entry(frame,width=20,bd=1, relief="solid",background="#f0f0f0")
-    facAdminNameEntry.grid(row=13, column=0, pady=(0,15),padx=(0,10),sticky="w")
+    facAdminNameEntry.grid(row=13, column=0, pady=(0,15),sticky="w")
 
     facAdminEmailEntry = tk.Entry(frame,width=20,bd=1, relief="solid",background="#f0f0f0")
-    facAdminEmailEntry.grid(row=13, column=1,pady=(0,15) ,padx=(0,10),sticky="w")
+    facAdminEmailEntry.grid(row=13, column=1,pady=(0,15) ,sticky="w")
 
     #buttons
 
     # Clear and Submit buttons
-    clearButton = tk.Button(frame,text="Clear", font=("Arial", 12),padx=20,bg="#007bff",fg="white",width=6)
+    clearButton = tk.Button(frame,text="Clear", font=("Arial", 12),padx=20,bg="#007bff",fg="white",width=6, command=lambda: clearAll(fullNameEntry, emailEntry, passwordEntry, schoolEntry, programmeEntry,advNameEntry, advEmailEntry, progDirNameEntry, progDirEmailEntry, facAdminNameEntry, facAdminEmailEntry))
     clearButton.grid(row=14, column=0,sticky="w")
 
     submitButton = tk.Button(frame, text="Submit",font=("Arial", 12), padx=20, bg="#007bff",fg="white", width=6,command=lambda: validation(fullNameEntry, emailEntry, passwordEntry, schoolEntry, programmeEntry, advNameEntry, advEmailEntry, progDirNameEntry, progDirEmailEntry, facAdminNameEntry, facAdminEmailEntry))
-    submitButton.grid(row=14, column=1,sticky="w")
+    submitButton.grid(row=14, column=1,sticky="e", padx=(0,7))
 
-    return frame
+    backButton = tk.Button(frame,text="Back to Menu", font=("Arial", 12),padx=20,bg="#007bff",fg="white",width=23,command=lambda: backToMenu(frame,root))
+    backButton.grid(row=15, column=0,sticky="w", pady=(10,0), columnspan=2)
+    
+    root.mainloop()  # Keep the Tkinter main loop active
 
 
 

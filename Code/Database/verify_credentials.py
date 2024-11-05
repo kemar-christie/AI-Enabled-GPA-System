@@ -1,5 +1,5 @@
 from Database.database_connection import get_db_connection
-
+import tkinter.messagebox as messagebox
 
 def verify_admin_credentials(adminID, password):
     # Get the database connection
@@ -18,7 +18,7 @@ def verify_admin_credentials(adminID, password):
         result = cursor.fetchone()
         return result is not None  # Returns True if a row is found, False otherwise
     except Exception as e:
-        print(f"Error verifying credentials: {e}")
+        messagebox.showerror("Database Error", f"Error adding Student: {e}")
         return False
     finally:
         cursor.close()
@@ -43,7 +43,7 @@ def verify_student_credentials(stdID, password):
         result = cursor.fetchone()
         return result is not None  # Returns True if a row is found, False otherwise
     except Exception as e:
-        print(f"Error verifying credentials: {e}")
+        messagebox.showerror("Database Error", f"Error adding Student: {e}")
         return False
     finally:
         cursor.close()
