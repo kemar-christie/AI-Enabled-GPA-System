@@ -45,3 +45,14 @@ def admin_navbar(root):
     exitButton.grid(row=2, column=0, sticky="w",pady=(10,0))
 
 
+root = tk.Tk()
+root.geometry("600x600")
+root.title("Academic Probation Login")
+
+# Set the background color of the root window to white
+root.configure(bg="white")
+
+
+admin_navbar(root)
+root.mainloop()  # Start the Tkinter main loop
+

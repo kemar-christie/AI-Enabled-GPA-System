@@ -17,4 +17,5 @@ def get_db_connection():
         #F-strings allow you to embed expressions inside string literals by enclosing them in curly braces {}
         messagebox.showerror("Validation Error", f"Error connecting to the database: {e}")
         return None
+
     

@@ -6,14 +6,14 @@ def backToLogin(frame,root):
     import Login_Interface as lgInterface
     lgInterface.login_interface(root)#display the login screen
 
-def moduleEnrollment(frame,root):
+def moduleEnrollment(frame,root,id):
     frame.destroy()
 
     import student_select_module as stdModule
-    stdModule.select_module_interface(root)
+    stdModule.select_module_interface(root,id)
     
 
-def student_navbar(root):
+def student_navbar(root,id):
     # Create a frame for the student navbar
     frame = tk.Frame(root, bg="white", bd=2, relief="solid", padx=20, pady=20)
     frame.pack(expand=True, pady=(20,20))  # keeps the content in the center of the window
@@ -23,7 +23,7 @@ def student_navbar(root):
     label.grid(row=0, column=0, pady=(0, 30), columnspan=3)
 
     # Buttons
-    enrollButton = tk.Button(frame, text="Module Enrollment", font=("Arial", 12), padx=20, bg="#007bff",fg="white", width=12, command= lambda: moduleEnrollment(frame,root))
+    enrollButton = tk.Button(frame, text="Module Enrollment", font=("Arial", 12), padx=20, bg="#007bff",fg="white", width=12, command= lambda: moduleEnrollment(frame,root,id))
     enrollButton.grid(row=1, column=0, sticky="e", padx=(0,10))
 
     academicProgButton = tk.Button(frame, text="Academic Progress", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12)
@@ -31,3 +31,4 @@ def student_navbar(root):
 
     exitButton = tk.Button(frame, text="Logout", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: backToLogin(frame,root))
     exitButton.grid(row=2, column=0, sticky="w",pady=(10,0))
+

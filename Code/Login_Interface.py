@@ -62,7 +62,7 @@ def verifyLoginDetails(id,password,userType,root,frame):
         #if 
         elif userType =='Student':
             import student_navbar as stdNav
-            stdNav.student_navbar(root)#display the student menu
+            stdNav.student_navbar(root,id)#display the student menu
 
 
 def login_interface(root):
@@ -80,7 +80,7 @@ def login_interface(root):
 
 
     # Create the left-aligned username label
-    label = tk.Label(frame, text="Username", anchor='w', font=('default', 15),bg="white")
+    label = tk.Label(frame, text="ID", anchor='w', font=('default', 15),bg="white")
     label.grid(row=2, column=0, sticky='w', columnspan=2)
 
 

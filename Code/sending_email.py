@@ -7,7 +7,7 @@ def send_email(receiver_email, cc_emails, gpa, threshold, programme, school, ful
     # Example usage
     sender_email = "academic.notifs@gmail.com"
     subject = "Academic Alert: Low GPA"
-    body = (f"Dear {full_name},\n\n"
+    body = (f"Dear {full_name},\n"
             f"We are notifying you that your GPA has fallen to {gpa}, "
             f"which is at or below the acceptable threshold of {threshold}.\n\n"
             f"Program: {programme}\n"
