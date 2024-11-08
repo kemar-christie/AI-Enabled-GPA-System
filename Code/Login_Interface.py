@@ -109,3 +109,5 @@ def login_interface(root):
 
     submitButton = tk.Button(frame, text="Submit",font=("Arial", 12), padx=20, bg="#007bff",fg="white", width=6, command= lambda:validateLoginDetails(usernameEntry,passwordEntry,dropdown,root,frame))
     submitButton.grid(row=8, column=1,sticky="e")
+
+
