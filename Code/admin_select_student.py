@@ -1,6 +1,8 @@
 # admin_select_student.py
 
 import tkinter as tk
+import tkinter.messagebox as messagebox
+
 
 def admin_select_student(root):
     # Create main frame
@@ -13,11 +15,19 @@ def admin_select_student(root):
 
     # Student ID Entry label
     id_label = tk.Label(frame, text="Enter Student ID", font=('Arial', 12), bg="white")
-    id_label.pack(pady=(0, 10))
+    id_label.pack(pady=(0, 10),anchor='w')
 
     # Student ID Entry field
     id_entry = tk.Entry(frame, font=('Arial', 12), width=30)
     id_entry.pack(pady=(0, 20))
+
+    # Desired GPA Entry label
+    gpa_label = tk.Label(frame, text="Desired GPA (Optional)", font=('Arial', 12), bg="white")
+    gpa_label.pack(pady=(0, 10),anchor='w')
+
+    # Student ID Entry field
+    gpa_entry = tk.Entry(frame, font=('Arial', 12), width=30)
+    gpa_entry.pack(pady=(0, 20))
 
     # Button frame for layout
     button_frame = tk.Frame(frame, bg="white")
@@ -43,7 +53,7 @@ def admin_select_student(root):
         width=10,
         bg="#007bff",
         fg="white",
-        command=lambda: validate_and_proceed(id_entry.get(), frame, root)
+        command=lambda: validate_and_proceed(id_entry.get().strip(), gpa_entry.get().strip(), frame, root)
     )
     next_btn.pack(side="right", padx=10)
 
@@ -52,9 +62,9 @@ def back_to_admin(frame, root):
     import admin_navbar as nav
     nav.admin_navbar(root)
 
-def validate_and_proceed(student_id, frame, root):
+def validate_and_proceed(student_id,desired_gpa, frame, root):
     # Check if the field is empty
-    if student_id.strip() == "":
+    if student_id == "":
         messagebox.showerror("Error", "Please enter a student ID")
         return
     
@@ -63,8 +73,30 @@ def validate_and_proceed(student_id, frame, root):
         messagebox.showerror("Error", "Student ID must contain only numbers")
         return
     
+    #check if the ID entered is 7 digits in length
+    if  len(student_id)!=7:
+        messagebox.showerror("Error", "Student ID must be 7 digits")
+        return
+    
+    if desired_gpa != '':
+        try:
+            # Attempt to convert desired_gpa to float
+            desired_gpa = float(desired_gpa)
+            
+            # Check if GPA is within the range 0.0 to 4.3 and has a max of two decimal places
+            if 0.0 <= desired_gpa <= 4.3 and len(str(desired_gpa)) <= 4:
+                print("Valid GPA entered.")
+            else:
+                messagebox.showerror("Invalid GPA", "GPA must be between 0.0 and 4.3 with no more than two decimal places.")
+                return
+        except ValueError:
+            messagebox.showerror("Invalid Input", "Please enter a numeric GPA value.")
+            return
+    else :
+        desired_gpa ='N/A'
+
     # If we get here, the input is valid (contains only numbers)
-    print(f"Proceeding with student ID: {student_id}")
+    print(f"Proceeding with student ID: {student_id} and desired GPA {desired_gpa}")
 
 if __name__ == "__main__":
     root = tk.Tk()

@@ -16,6 +16,11 @@ def backToLogin(frame,root):
     import Login_Interface as lgInterface
     lgInterface.login_interface(root)#display the login screen
 
+def request_stdID_and_gpa(root,frame):
+    frame.destroy()
+
+    import admin_select_student as admSelStd
+    admSelStd.admin_select_student(root)
 
 def admin_navbar(root):
     # Create a frame for the admin navbar
@@ -35,9 +40,10 @@ def admin_navbar(root):
     addStudentBtn.grid(row=1, column=0, sticky="e", padx=(0,10))
 
     addStudentGradesBtn = tk.Button(frame, text="Student Grades", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12)
+    
     addStudentGradesBtn.grid(row=1, column=1, sticky="e", padx=(0,10))
 
-    viewStudentProgressBtn = tk.Button(frame, text="Academic Progress", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12)
+    viewStudentProgressBtn = tk.Button(frame, text="Academic Progress", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: request_stdID_and_gpa(root,frame))
     viewStudentProgressBtn.grid(row=1, column=2, sticky="e")
 
     exitButton = tk.Button(frame, text="Logout", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: backToLogin(frame,root))
