@@ -1,5 +1,15 @@
 # Dwyane Gibbs
 import pyswip
+import os
+
+# Get the current directory an dprint out the files.
+# NB prolog_knowledge_base.pl is showing in the list of files but still getting
+# an error ERROR: source_sink `'prolog_knowledge_base.pl'' does not exist
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# Create the full path to the Prolog file
+prolog_file = os.path.join(current_dir, "prolog_knowledge_base.pl")
+print("Files in directory:", os.listdir(current_dir))
+
 
 # Load the Prolog file
 prolog = pyswip.Prolog()
