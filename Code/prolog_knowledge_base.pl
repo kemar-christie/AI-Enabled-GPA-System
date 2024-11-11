@@ -36,7 +36,7 @@ divide_numbers(Num1, Num2, Total) :-
     number(Num1),    % Verify first number
     number(Num2),    % Verify second number
     Num2 =\= 0,      % Check for division by zero
-    Total is Number1 / Number2.
+    Total is Num1 / Num2.
 
 
 % Initial default GPA
