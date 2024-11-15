@@ -57,7 +57,7 @@ def verifyLoginDetails(id,password,userType,root,frame):
         if userType =='Admin':
 
             import admin_navbar as adminNav
-            adminNav.admin_navbar(root)  # Displays the admin menu
+            adminNav.admin_navbar(root,id)  # Displays the admin menu
 
         #if 
         elif userType =='Student':

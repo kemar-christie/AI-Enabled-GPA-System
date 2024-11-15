@@ -22,7 +22,7 @@ def request_stdID_and_gpa(root,frame):
     import admin_select_student as admSelStd
     admSelStd.admin_select_student(root)
 
-def admin_navbar(root):
+def admin_navbar(root,adminID):
     # Create a frame for the admin navbar
     frame = tk.Frame(root, bg="white", bd=2, relief="solid", padx=20, pady=20)
     frame.pack(expand=True, pady=(20,20))  # keeps the content in the center of the window
@@ -45,6 +45,25 @@ def admin_navbar(root):
 
     viewStudentProgressBtn = tk.Button(frame, text="Academic Progress", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: request_stdID_and_gpa(root,frame))
     viewStudentProgressBtn.grid(row=1, column=2, sticky="e")
+    
+    addModuleBtn = tk.Button(frame, text="Add Module", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12)
+    addModuleBtn.grid(row=2, column=0, sticky="w",pady=(10,0))
 
     exitButton = tk.Button(frame, text="Logout", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: backToLogin(frame,root))
-    exitButton.grid(row=2, column=0, sticky="w",pady=(10,0))
+    exitButton.grid(row=2, column=1, sticky="w",pady=(10,0))
+
+
+    
+
+if __name__ == "__main__":
+    
+    root = tk.Tk()
+    root.geometry("600x600")
+    root.title("Academic Probation Login")
+
+    # Set the background color of the root window to white
+    root.configure(bg="white")
+
+    admin_navbar(root)
+
+    root.mainloop()  # Start the Tkinter main loop

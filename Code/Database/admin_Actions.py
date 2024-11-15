@@ -76,4 +76,81 @@ def display_info_in_large_font(info_message):
     info_window.grab_set()
 
 
+def get_admin_name(adminID):
+    # Connect to the database
+    dbConn = get_db_connection()
+    try:
+        cursor = dbConn.cursor()
+
+        # SQL query to fetch the admin_fullname based on adminID
+        query = "SELECT admin_fullname FROM admin WHERE adminID = %s"
+        cursor.execute(query, (adminID,))
+
+        # Fetch the result
+        result = cursor.fetchone()
+
+        # Check if the result exists and return the admin name
+        if result:
+            return result[0]  # Extract the admin name from the result
+        else:
+            messagebox.showinfo("Info", "Admin ID not found.")
+            return None
+
+    except Exception as e:
+        messagebox.showerror("Database Error", f"Error fetching admin name: {e}")
+        return None
+
+    finally:
+        # Close the database connection
+        cursor.close()
+        dbConn.close()
+
+
+
+def add_modules_to_database(table):
+    # Connect to the database
+    dbConn = get_db_connection()
+    try:
+        cursor = dbConn.cursor()
+
+        # Check if all modules are unique in the database
+        duplicate_modules = []
+        for item in table.get_children():
+            module_code = table.item(item, 'values')[0]
+            
+            # Check if the module code already exists in the database
+            cursor.execute("SELECT moduleID FROM module WHERE moduleID = %s", (module_code,))
+            if cursor.fetchone() is not None:
+                duplicate_modules.append(module_code)
+
+        # If duplicates are found, alert the user and stop the process
+        if duplicate_modules:
+            messagebox.showwarning("Duplicate Modules", f"The following modules already exist in the database: {', '.join(duplicate_modules)}")
+            return
+
+        # Insert all unique modules into the database
+        for item in table.get_children():
+            values = table.item(item, 'values')
+            module_code = values[0]
+            module_name = values[1]
+            num_of_credits = int(values[2])
+
+            query = """
+                INSERT INTO module (moduleID, moduleName, num_of_credits) 
+                VALUES (%s, %s, %s);
+            """
+            cursor.execute(query, (module_code, module_name, num_of_credits))
+
+        # Commit the transaction to ensure all records are added
+        dbConn.commit()
+        messagebox.showinfo("Success", "All modules have been successfully added to the database.")
+
+    except Exception as e:
+        # Roll back in case of any error
+        dbConn.rollback()
+        messagebox.showerror("Database Error", f"Error adding modules to database: {e}")
+
+    finally:
+        cursor.close()
+        dbConn.close()
 

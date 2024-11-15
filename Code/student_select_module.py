@@ -270,3 +270,15 @@ def select_module_interface(root,id):
         backtoStdMenu.grid(row=12, column=0, sticky="w",pady=(10,0),columnspan=3)
         
 
+if __name__ == "__main__":
+    
+    root = tk.Tk()
+    root.geometry("600x600")
+    root.title("Academic Probation Login")
+
+    # Set the background color of the root window to white
+    root.configure(bg="white")
+
+    select_module_interface(root,'2400003')
+
+    root.mainloop()  # Start the Tkinter main loop
