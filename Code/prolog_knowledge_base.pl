@@ -1,6 +1,17 @@
 % Academic Probation Alert Python and Prolog Project. 
 % Authors Dwayne Gibbs, Kemar Christie, Roberto James, Tyoni Davis.
 
+/*
+Function that accepts a list for the credits that each module has and the corresponding scre a student got and outputs back the
+letter grade, gpa and grade point. grade point is credit x corresponding GPA.
+
+Input : Credit [3,4,3,4 ] and [90,40,80,30] - score
+Output: Letter Grade[A+,D-,A-,F] and GPA [4.00,1.8,3.67,1.5] and Grade Point Earned [12,7.2,11.01,6]
+
+Function that adds all integers in a list
+Sum of List [3,4,3,4]
+Output = 14
+*/
 
 % Grade scale facts
 grade_scale('A+', 4.3, 90.0, 100.0).
