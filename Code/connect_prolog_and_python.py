@@ -1,10 +1,11 @@
 # Dwyane Gibbs
 import pyswip
-from pyswip import Prolog
+import os
+
 
 # Load the Prolog file
-prolog = pyswip.Prolog()
-prolog.consult("prolog_knowledge_base.pl")
+prolog_file = os.path.join(os.getcwd(), "prolog_knowledge_base.pl")
+prolog.consult(prolog_file)
 
 
 # Define a function to get the letter grade and grade point for a given score
