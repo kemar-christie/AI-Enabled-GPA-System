@@ -1,17 +1,58 @@
 % Academic Probation Alert Python and Prolog Project. 
 % Authors Dwayne Gibbs, Kemar Christie, Roberto James, Tyoni Davis.
 
-/*
-Function that accepts a list for the credits that each module has and the corresponding scre a student got and outputs back the
-letter grade, gpa and grade point. grade point is credit x corresponding GPA.
+% Accepts a list for the credits that each module has and the corresponding score a student got and outputs back the letter grade, gpa and grade point. grade point is credit x corresponding GPA.
+process_grades([], [], [], [], []).
+process_grades([Credit|Credits], [Score|Scores], [Letter|Letters], [GPA|GPAs], [Point|Points]) :-
+    % Get letter grade and GPA for current score
+    score_to_grade(Score, Letter, GPA),
+    % Calculate grade point (credit × GPA)
+    Point is Credit * GPA,
+    % Process rest of the lists
+    process_grades(Credits, Scores, Letters, GPAs, Points).
 
-Input : Credit [3,4,3,4 ] and [90,40,80,30] - score
-Output: Letter Grade[A+,D-,A-,F] and GPA [4.00,1.8,3.67,1.5] and Grade Point Earned [12,7.2,11.01,6]
+% Calculate cumulative GPA with result formatted to 2 decimal places
+calculate_cumulative_gpa(Credits1, Scores1, Credits2, Scores2, FormattedGPA) :-
+    % Calculate total points and credits for each semester
+    process_grades(Credits1, Scores1, _, _, GradePoints1),
+    process_grades(Credits2, Scores2, _, _, GradePoints2),
+    sum_list(GradePoints1, TotalPoints1),
+    sum_list(GradePoints2, TotalPoints2),
+    sum_list(Credits1, TotalCredits1),
+    sum_list(Credits2, TotalCredits2),
+    % Calculate cumulative GPA
+    TotalPoints is TotalPoints1 + TotalPoints2,
+    TotalCredits is TotalCredits1 + TotalCredits2,
+    TotalCredits > 0,
+    % Calculate raw GPA
+    RawGPA is TotalPoints / TotalCredits,
+    % Format to 2 decimal places
+    FormattedGPA is round(RawGPA * 100) / 100.
 
-Function that adds all integers in a list
-Sum of List [3,4,3,4]
-Output = 14
-*/
+% Calculate semester GPA with result formatted to 2 decimal places
+calculate_semester_gpa(Credits, Scores, FormattedGPA) :-
+    % Process all grades
+    process_grades(Credits, Scores, _, _, GradePoints),
+    % Sum up total grade points and credits
+    sum_list(GradePoints, TotalPoints),
+    sum_list(Credits, TotalCredits),
+    % Verify credits total is greater than zero
+    TotalCredits > 0,
+    % Calculate raw GPA
+    RawGPA is TotalPoints / TotalCredits,
+    % Format to 2 decimal places
+    FormattedGPA is round(RawGPA * 100) / 100.
+
+% Adds all integers in a list
+% Base case: empty list has sum of 0
+sum_list([], 0).
+% Case for single element list: sum is just that element
+sum_list([Single], Single).
+% Recursive case for lists with more than one element
+sum_list([Head|Tail], Sum) :-
+    sum_list(Tail, TailSum),
+    Sum is Head + TailSum.
+
 
 % Grade scale facts
 grade_scale('A+', 4.3, 90.0, 100.0).
@@ -58,3 +99,15 @@ update_default_gpa(NewGPA) :-
     retract(default_gpa(_)),      % Remove the current default GPA
     assert(default_gpa(NewGPA)).  % Set the new default GPA
 
+% Check academic probation function maybe needed
+
+/*
+% Process grades for a semester:
+?- process_grades([3,4,3,4], [90,40,80,30], Letters, GPAs, Points).
+
+% Calculate semester GPA:
+?- calculate_semester_gpa([3,4,3,4], [90,40,80,30], GPA).
+
+% Calculate cumulative GPA:
+?- calculate_cumulative_gpa([3,4], [90,80], [3,4], [70,60], CGPA).
+*/
