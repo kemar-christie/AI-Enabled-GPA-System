@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
 
 
@@ -80,6 +81,7 @@ def deleteRecordFromTable(table):
             table.delete(item)
 
 
+
 def addModuleToDatabase(table):
     # Check if the table has any records
     if not table.get_children():
@@ -91,7 +93,104 @@ def addModuleToDatabase(table):
     from Database.admin_Actions import add_modules_to_database
     add_modules_to_database(table)
 
+    for item in table.get_children():
+        table.delete(item)
 
+
+
+def displayModulesInDatabase():
+    from Database.admin_Actions import getAllModules
+
+    """
+    Creates a Toplevel window to display and search all modules from the database.
+    """
+    def search_modules():
+        """
+        Filters the modules displayed in the Treeview based on the search term.
+        """
+        search_term = search_entry.get().strip().lower()
+        if not search_term:
+            messagebox.showinfo("Empty Search", "Please enter a search term.")
+            return
+
+        # Clear the Treeview
+        for row in tree.get_children():
+            tree.delete(row)
+
+        # Filter modules and add matching rows
+        for module in modules:
+            if search_term in module[0].lower() or search_term in module[1].lower():
+                tree.insert("", "end", values=module)
+
+    def reset_treeview():
+        """
+        Resets the Treeview to display all modules.
+        """
+        search_entry.delete(0, tk.END)  # Clear the search box
+        for row in tree.get_children():  # Clear the Treeview
+            tree.delete(row)
+        for module in modules:  # Re-add all modules
+            tree.insert("", "end", values=module)
+
+    try:
+        # Call the database function to get all modules
+        modules = getAllModules()
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
+        return
+
+    # Create the child window
+    child_window = tk.Toplevel()
+    child_window.title("Modules in Database")
+    child_window.geometry("700x500")
+
+    # Create a Frame for the search bar
+    search_frame = tk.Frame(child_window)
+    search_frame.pack(pady=10, fill="x")
+
+    # Add the search label, entry, and buttons
+    tk.Label(search_frame, text="Search: ").pack(side="left", padx=5)
+
+    search_entry = tk.Entry(search_frame, width=20, font=("Arial", 12))
+    search_entry.pack(side="left", padx=5)
+
+    search_button = tk.Button(search_frame, text="Search", command=search_modules, bg="#007bff", fg="white")
+    search_button.pack(side="left", padx=5)
+
+    reset_button = tk.Button(search_frame, text="Reset", command=reset_treeview, bg="#dc3545", fg="white")
+    reset_button.pack(side="left", padx=5)
+
+    # Create a Frame for the Treeview and its scrollbar
+    table_frame = tk.Frame(child_window)
+    table_frame.pack(fill="both", expand=True, pady=10, padx=10)  # Added padx=10 for horizontal padding
+
+    # Add a Treeview for displaying modules
+    tree = ttk.Treeview(table_frame, columns=("Module ID", "Module Name", "Credits"), show="headings")
+    tree.heading("Module ID", text="Module ID")
+    tree.heading("Module Name", text="Module Name")
+    tree.heading("Credits", text="Credits")
+    tree.column("Module ID", width=30)
+    tree.column("Module Name", width=400)
+    tree.column("Credits", width=30, anchor="center")
+
+    # Add a vertical scrollbar linked to the Treeview
+    scrollbar = ttk.Scrollbar(table_frame, orient="vertical", command=tree.yview)
+    tree.configure(yscroll=scrollbar.set)
+
+    # Pack Treeview and scrollbar
+    tree.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+
+    # Add modules to the Treeview
+    for module in modules:
+        tree.insert("", "end", values=module)
+
+    if not modules:
+        messagebox.showinfo("No Modules", "No modules found in the database.")
+
+    # Add a Close button
+    close_button = tk.Button(child_window, text="Close", command=child_window.destroy, bg="#007bff", fg="white", width=11, font=("Arial", 11))
+    close_button.pack(pady=10)
 
 def add_module_interface(root, adminID):
 
@@ -100,8 +199,6 @@ def add_module_interface(root, adminID):
     #if a name was not recieved the user will not be able to add a module
     if adminName is None:
         return 
-    
-    from tkinter import ttk
 
     frame = tk.Frame(root, bg="white")
     frame.pack(expand=True)  # keeps the content in the center of the window
@@ -170,6 +267,9 @@ def add_module_interface(root, adminID):
 
     add_button = tk.Button(frame, text="Add Module", command= lambda: addModuleToTable(table, moduleCodeEntry, moduleNameEntry, moduleCreditEntry))
     add_button.grid(row=8, column=0, pady=15, sticky='w',columnspan=2)
+
+    viewAllModulesBtn = tk.Button(frame, text="View All Modules In Database", command= lambda: displayModulesInDatabase())
+    viewAllModulesBtn.grid(row=8, column=1, sticky='w', pady=(5,10), padx=(0,0),columnspan=2)
     
     backtoStdMenu = tk.Button(frame, text="Back to Menu", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: backToMenu(frame,root,id))
     backtoStdMenu.grid(row=9, column=0, sticky="w",columnspan=3)

@@ -154,3 +154,20 @@ def add_modules_to_database(table):
         cursor.close()
         dbConn.close()
 
+
+def getAllModules():
+    """
+    Retrieves all modules from the database and returns them as a list of tuples.
+    Each tuple contains (moduleID, moduleName, num_of_credits).
+    """
+    dbConn = get_db_connection()
+    try:
+        cursor = dbConn.cursor()
+        cursor.execute("SELECT moduleID, moduleName, num_of_credits FROM module")
+        modules = cursor.fetchall()
+        return modules
+    except Exception as e:
+        raise Exception(f"Error retrieving modules: {e}")
+    finally:
+        cursor.close()
+        dbConn.close()

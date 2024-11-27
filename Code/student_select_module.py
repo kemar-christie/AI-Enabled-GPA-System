@@ -43,10 +43,6 @@ def add_row(table, module_code_combobox, module_name_combobox, module_credit_com
         module_name_combobox.delete(0, 'end')
         module_credit_combobox.delete(0, 'end')
 
-        # Increase the height of the table by 1 row
-        current_height = table['height']
-        table.config(height=current_height + 1)
-
         # Update the total credits by adding the new module's credit
         total_credits += module_credit
         creditsLabel.config(text=f"Total Credits: {total_credits}")
@@ -54,7 +50,7 @@ def add_row(table, module_code_combobox, module_name_combobox, module_credit_com
         messagebox.showinfo("No Module Selected", "Please select a module from the dropdown")
 # End of add_row()
 
-
+#when user selects the record from the drop down this function populates teh input fields
 def update_fields(modified_comboBox, module_codes, module_names, module_credits, module_name_combobox, module_credit_combobox, module_code_combobox):
     selected_code = module_code_combobox.get()
     selected_name = module_name_combobox.get()
@@ -104,11 +100,6 @@ def delete_selected_row(table, creditsLabel):
             
             # Count the number of records deleted
             recordsCount += 1
-
-        # Get the current height of the table
-        current_height = table['height']
-        # Decrease the height of the table by the number of records deleted
-        table.config(height=current_height - recordsCount)
 
         # Subtract the total credits of the deleted items from the current total credit
         total_credits -= total_credits_to_decrement
@@ -207,7 +198,15 @@ def select_module_interface(root,id):
         label.grid(row=4, column=0, pady=(0,5), sticky='w', columnspan=4)
         
         # Table setup
-        table = ttk.Treeview(frame, columns=('Column1', 'Column2', 'Column3'), show='headings', height=1)
+        table_frame = tk.Frame(frame, bg="white")
+        table_frame.grid(row=5, column=0, columnspan=4, sticky="w")  # Added a frame for the table and scrollbar
+
+        table = ttk.Treeview(
+            table_frame,
+            columns=('Column1', 'Column2', 'Column3'),
+            show='headings',
+            height=4  # Display only 4 records at a time
+        )
         table.heading('Column1', text='Module Code')
         table.heading('Column2', text='Module Name')
         table.heading('Column3', text='Module Credit')
@@ -216,9 +215,16 @@ def select_module_interface(root,id):
         table.column('Column1', width=100, anchor='center')
         table.column('Column2', width=250, anchor='center')
         table.column('Column3', width=100, anchor='center')
-        # Set the location in the frame the grid will be
-        table.grid(row=5, column=0, columnspan=4, sticky='w')
-        
+
+        # Add a vertical scrollbar linked to the table
+        scrollbar = ttk.Scrollbar(table_frame, orient="vertical", command=table.yview)
+        table.configure(yscroll=scrollbar.set)
+
+        # Pack the table and scrollbar side by side
+        table.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+                
         # Buttons
         removeBtn = tk.Button(frame, text="Remove Module", command=lambda: delete_selected_row(table,creditsLabel))
         removeBtn.grid(row=6, column=0, sticky='w', pady=(5,10),columnspan=2)

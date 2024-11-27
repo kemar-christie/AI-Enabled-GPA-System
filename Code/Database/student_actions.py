@@ -100,7 +100,6 @@ def add_modules_to_enroll(academic_year, semester, student_id, table):
         # Commit the transaction to save changes
         dbConn.commit()
         messagebox.showinfo("Success", "Modules have been successfully enrolled.")
-
     except Exception as e:
         # Rollback in case of an error
         dbConn.rollback()
@@ -111,3 +110,5 @@ def add_modules_to_enroll(academic_year, semester, student_id, table):
         cursor.close()
         dbConn.close()
         print("Database connection closed.")
+
+        
