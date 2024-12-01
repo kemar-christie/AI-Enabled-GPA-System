@@ -30,11 +30,7 @@ def populate_input_fields(tree, moduleCodeEntry, moduleNameEntry, moduleGradeEnt
     """Populate the input fields with selected record values."""
     selected_item = tree.selection()  # Get selected item
 
-    if moduleGradeEntry == "Not Graded":
-        messagebox.showwarning("No Grade","Please select a grade for the student")
-        return
     
-
     if selected_item:
 
         moduleCodeEntry.config(state="normal")  # Temporarily allow changes to auto-fill
@@ -50,7 +46,8 @@ def populate_input_fields(tree, moduleCodeEntry, moduleNameEntry, moduleGradeEnt
         moduleNameEntry.delete(0, tk.END)  # Clear current entry
         moduleNameEntry.insert(0, module_name)  # Insert module name
 
-        moduleGradeEntry.set(grade)  # Set the grade in the combobox
+        moduleGradeEntry.delete(0, tk.END)
+        moduleGradeEntry.insert(0, "")  # Set the grade in the combobox
 
         moduleNameEntry.config(state="readonly")  # Make it readonly again
         moduleCodeEntry.config(state="readonly")  # Make it readonly again
@@ -59,8 +56,18 @@ def populate_input_fields(tree, moduleCodeEntry, moduleNameEntry, moduleGradeEnt
 
 def updateStdGRade(stdID,moduleID,semester,year,moduleGradeEntry,tree):
     
-    # Get the selected value from the combobox
-    selected_grade = moduleGradeEntry.get()
+
+    try:
+        selected_grade = int(moduleGradeEntry)  # Attempt to convert to integer
+    except ValueError:
+        messagebox.showwarning("Invalid Grade", "Grade should be an integer")
+        return
+    
+    #ensure a negative grade cannot be entered
+    if selected_grade<0 or selected_grade >100:
+        messagebox.showwarning("Invalid Grade", "Grade must be between 0 to 100")
+        return
+    
     import Database.admin_Actions as adminActions
     result=adminActions.update_student_grade(stdID,moduleID,semester,year,selected_grade)
     
@@ -173,14 +180,14 @@ def std_grade_info(root,grades):
     moduleNameEntry.pack(side=tk.LEFT,padx=(0,30))
 
     # Grade dropdown (read-only)
-    moduleGradeEntry = ttk.Combobox(inputFrame, values=["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "U"], state="readonly", width=10)
+    moduleGradeEntry = tk.Entry(inputFrame,width=10)
     moduleGradeEntry.pack(side=tk.LEFT)
 
     updateBtnFram = tk.Frame( frame, bg='white',padx=0,pady=0)
     updateBtnFram.pack(fill="both",expand=True)
 
     # Edit Record Button (left-aligned)
-    updateRecord = tk.Button(updateBtnFram, text="Update Student Grade", bg="#007bff", fg="white", command=lambda:updateStdGRade(root.stdID,moduleCodeEntry.get().strip(),root.semester,root.year,moduleGradeEntry,tree))
+    updateRecord = tk.Button(updateBtnFram, text="Update Student Grade", bg="#007bff", fg="white", command=lambda:updateStdGRade(root.stdID,moduleCodeEntry.get().strip(),root.semester,root.year,moduleGradeEntry.get().strip(),tree))
     updateRecord.pack(side=tk.LEFT, pady=(5,0), padx=(0,10))  # Left-align the button
 
     backtoStdMenu = tk.Button(frame, text="Back to Menu", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: backToMenu(frame,root))
