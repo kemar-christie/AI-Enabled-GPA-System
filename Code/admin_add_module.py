@@ -226,8 +226,8 @@ def add_module_interface(root):
     table.heading('Column3', text='Module Credit')
 
     # Set the width of each column and center the data
-    table.column('Column1', width=15, anchor='center')
-    table.column('Column2', width=250, anchor='center')
+    table.column('Column1', width=100, anchor='center')
+    table.column('Column2', width=300, anchor='center')
     table.column('Column3', width=100, anchor='center')
     table.pack(side="left", fill="y")  # Packs the table inside the frame
 
@@ -286,8 +286,8 @@ if __name__ == "__main__":
 
     # Set the background color of the root window to white
     root.configure(bg="white")
-
-    add_module_interface(root, "adm1")
+    root.adminID='adm1'
+    add_module_interface(root)
 
     root.mainloop()  # Start the Tkinter main loop
 
