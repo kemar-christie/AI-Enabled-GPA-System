@@ -110,4 +110,8 @@ update_default_gpa(NewGPA) :-
 
 % Calculate cumulative GPA:
 ?- calculate_cumulative_gpa([3,4], [90,80], [3,4], [70,60], CGPA).
+
+
+test case 
+calculate_cumulative_gpa([[3,3,4,4,3,2,1],[75,50,70,55,40,65,85], [1,4,3,4,2], [90,75,65,70,80], CGPA).
 */

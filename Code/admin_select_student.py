@@ -53,16 +53,20 @@ def admin_select_student(root):
         width=10,
         bg="#007bff",
         fg="white",
-        command=lambda: validate_and_proceed(id_entry.get().strip(), gpa_entry.get().strip(), frame, root)
+        command=lambda: validate_and_proceed(id_entry.get().strip(), gpa_entry.get().strip())
     )
     next_btn.pack(side="right", padx=10)
+
+
 
 def back_to_admin(frame, root):
     frame.destroy()
     import admin_navbar as nav
     nav.admin_navbar(root)
 
-def validate_and_proceed(student_id,desired_gpa, frame, root):
+
+
+def validate_and_proceed(student_id,desired_gpa):  
     # Check if the field is empty
     if student_id == "":
         messagebox.showerror("Error", "Please enter a student ID")
@@ -97,6 +101,8 @@ def validate_and_proceed(student_id,desired_gpa, frame, root):
 
     # If we get here, the input is valid (contains only numbers)
     print(f"Proceeding with student ID: {student_id} and desired GPA {desired_gpa}")
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()

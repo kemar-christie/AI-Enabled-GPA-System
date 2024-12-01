@@ -57,12 +57,14 @@ def verifyLoginDetails(id,password,userType,root,frame):
         if userType =='Admin':
 
             import admin_navbar as adminNav
-            adminNav.admin_navbar(root,id)  # Displays the admin menu
+            root.adminID =id
+            adminNav.admin_navbar(root)  # Displays the admin menu
 
         #if 
         elif userType =='Student':
             import student_navbar as stdNav
-            stdNav.student_navbar(root,id)#display the student menu
+            root.stdID=id
+            stdNav.student_navbar(root)#display the student menu
 
 
 def login_interface(root):

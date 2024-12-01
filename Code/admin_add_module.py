@@ -4,17 +4,18 @@ from tkinter import messagebox
 
 
 def backToMenu(frame,root):
-        frame.destroy()
-        import student_navbar as stdNav
-        stdNav.student_navbar(root,id)
+    frame.destroy()
+    
+    import admin_navbar as adminNav
+    adminNav.admin_navbar(root)
 
 
 
-def getAdminName(root, adminID):
+def getAdminName(root):
     #imports the database actions for the admin
     from Database.admin_Actions import get_admin_name
     #retrieves the name of the admin
-    adminName = get_admin_name(adminID)
+    adminName = get_admin_name(root.adminID)
 
     #if a name was not recieved teh user is sent back to the login interface
     if adminName is None:
@@ -192,9 +193,11 @@ def displayModulesInDatabase():
     close_button = tk.Button(child_window, text="Close", command=child_window.destroy, bg="#007bff", fg="white", width=11, font=("Arial", 11))
     close_button.pack(pady=10)
 
-def add_module_interface(root, adminID):
 
-    adminName=getAdminName(root, adminID)
+def add_module_interface(root):
+
+    #function that calls gets admin Name from database
+    adminName=getAdminName(root)
 
     #if a name was not recieved the user will not be able to add a module
     if adminName is None:
@@ -223,7 +226,7 @@ def add_module_interface(root, adminID):
     table.heading('Column3', text='Module Credit')
 
     # Set the width of each column and center the data
-    table.column('Column1', width=100, anchor='center')
+    table.column('Column1', width=15, anchor='center')
     table.column('Column2', width=250, anchor='center')
     table.column('Column3', width=100, anchor='center')
     table.pack(side="left", fill="y")  # Packs the table inside the frame
@@ -271,7 +274,7 @@ def add_module_interface(root, adminID):
     viewAllModulesBtn = tk.Button(frame, text="View All Modules In Database", command= lambda: displayModulesInDatabase())
     viewAllModulesBtn.grid(row=8, column=1, sticky='w', pady=(5,10), padx=(0,0),columnspan=2)
     
-    backtoStdMenu = tk.Button(frame, text="Back to Menu", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: backToMenu(frame,root,id))
+    backtoStdMenu = tk.Button(frame, text="Back to Menu", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: backToMenu(frame,root))
     backtoStdMenu.grid(row=9, column=0, sticky="w",columnspan=3)
         
 

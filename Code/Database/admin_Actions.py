@@ -1,4 +1,5 @@
 from Database.database_connection import get_db_connection
+#from database_connection import get_db_connection
 import tkinter as tk
 import tkinter.messagebox as messagebox
 
@@ -171,3 +172,77 @@ def getAllModules():
     finally:
         cursor.close()
         dbConn.close()
+
+
+def get_student_grades_for_semester(student_id, year, semester):
+    # Use the existing connection method
+    dbConn = get_db_connection()
+    
+    try:
+        cursor = dbConn.cursor()
+
+        # Call the stored procedure
+        cursor.callproc('get_student_grades_for_semester', (student_id, year, semester))
+
+        # Fetch the result
+        grades = None
+        for result in cursor.stored_results():
+            grades = result.fetchall()
+
+        if grades:
+            return grades
+        else:
+            messagebox.showinfo("No Grades Found", "No grades found for this student in the specified year and semester.")
+            return None
+
+    except Exception as e:
+        if "Student not found" in str(e):
+            messagebox.showinfo("Student Not Found", "The specified student does not exist.")
+        else:
+            messagebox.showerror("Database Error", f"Error fetching grades: {e}")
+        return None
+
+    finally:
+        cursor.close()
+        dbConn.close()
+
+
+
+def update_student_grade(studentID, moduleID, semester, year, grade):
+    """Update the grade for a student's module enrollment."""
+    
+    try:
+        # Use the existing connection method
+        dbConn = get_db_connection()
+        cursor = dbConn.cursor()
+
+        # SQL query to update the grade in the enroll table
+        update_query = """
+            UPDATE enroll
+            SET grade = %s
+            WHERE stdID = %s AND moduleID = %s AND semester = %s AND year = %s
+        """
+
+        # Execute the query with the provided values
+        cursor.execute(update_query, (grade, studentID, moduleID, semester, year))
+
+        # Commit the changes
+        dbConn.commit()
+
+        # Check if any rows were affected (i.e., the update was successful)
+        if cursor.rowcount > 0:
+            messagebox.showinfo("Success", "Grade Updated Successfully")
+            return True
+        else:
+            messagebox.showwarning("No Record Found", "No matching record found for the update.")
+            return False
+        
+    except Exception as err:
+        # Handle any database connection or query errors
+        messagebox.showerror("Error", f"Error: {err}")
+
+    finally:
+        # Close the cursor and connection
+        cursor.close()
+        dbConn.close()
+

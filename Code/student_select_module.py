@@ -111,7 +111,7 @@ def delete_selected_row(table, creditsLabel):
         messagebox.showinfo("No Selection", "Please select a record or records, then click Delete.")
 
 
-def addModuleToDatabase(academicYearComboBox, semesterComboBox, table, id):
+def addModuleToDatabase(academicYearComboBox, semesterComboBox, table,root):
     # Check if an academic year and semester have been selected
     academic_year = academicYearComboBox.get().strip()
     semester = semesterComboBox.get().strip()
@@ -137,28 +137,28 @@ def addModuleToDatabase(academicYearComboBox, semesterComboBox, table, id):
     
     from Database.student_actions import add_modules_to_enroll
 
-    add_modules_to_enroll(academic_year,semester,id,table)
+    add_modules_to_enroll(academic_year,semester,root.stdID,table)
 
      
 
-def backToMenu(frame,root,id):
+def backToMenu(frame,root):
         frame.destroy()
         import student_navbar as stdNav
-        stdNav.student_navbar(root,id)
+        stdNav.student_navbar(root)
 
 
-def select_module_interface(root,id):
+def select_module_interface(root):
     import Database.student_actions as stdAction
     import student_navbar as stdNav
 
     # Get the student ID the user entered and search the dataase for the student name corresponding with the ID
-    stdName=stdAction.get_student_name(id)
+    stdName=stdAction.get_student_name(root.stdID)
     if stdName == 'N/A':
-        stdNav.student_navbar(root,id)
+        stdNav.student_navbar(root)
 
     else:
         from tkinter import ttk
-        stdNameAndID = "Student : " + id +" - " + stdName
+        stdNameAndID = "Student : " + root.stdID +" - " + stdName
         frame = tk.Frame(root, bg="white")
         frame.pack(expand=True)  # keeps the content in the center of the window
 
@@ -229,7 +229,7 @@ def select_module_interface(root,id):
         removeBtn = tk.Button(frame, text="Remove Module", command=lambda: delete_selected_row(table,creditsLabel))
         removeBtn.grid(row=6, column=0, sticky='w', pady=(5,10),columnspan=2)
         
-        confirmModuleBtn = tk.Button(frame, text="Confirm Module Selection", command=lambda : addModuleToDatabase(academicYearComboBox,semesterComboBox,table,id))
+        confirmModuleBtn = tk.Button(frame, text="Confirm Module Selection", command=lambda : addModuleToDatabase(academicYearComboBox,semesterComboBox,table,root))
         confirmModuleBtn.grid(row=6, column=1, sticky='w', columnspan=2,pady=(5,10), padx=(20,0))
 
         creditsLabel = tk.Label(frame, text="Total Credits = 0", font=('default', 10), bg="white", anchor='w')
@@ -272,19 +272,7 @@ def select_module_interface(root,id):
         add_button = tk.Button(frame, text="Add Module", command=lambda: add_row(table, module_code_combobox, module_name_combobox, module_credit_combobox,creditsLabel))
         add_button.grid(row=11, column=0, pady=10, sticky='w',columnspan=2)
         
-        backtoStdMenu = tk.Button(frame, text="Back to Menu", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: backToMenu(frame,root,id))
+        backtoStdMenu = tk.Button(frame, text="Back to Menu", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: backToMenu(frame,root))
         backtoStdMenu.grid(row=12, column=0, sticky="w",pady=(10,0),columnspan=3)
         
 
-if __name__ == "__main__":
-    
-    root = tk.Tk()
-    root.geometry("600x600")
-    root.title("Academic Probation Login")
-
-    # Set the background color of the root window to white
-    root.configure(bg="white")
-
-    select_module_interface(root,'2400003')
-
-    root.mainloop()  # Start the Tkinter main loop
