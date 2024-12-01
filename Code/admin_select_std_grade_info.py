@@ -2,6 +2,46 @@ import tkinter as tk
 from tkinter import ttk
 
 
+
+def backToMenu(frame,root):
+    frame.destroy()
+    
+    import admin_navbar as adminNav
+    adminNav.admin_navbar(root)
+
+def clear_fields(student_id_entry,academic_year_dropdown,semester_dropdown):
+    """Clear the input fields."""
+    student_id_entry.delete(0, tk.END)
+    academic_year_dropdown.set('')
+    semester_dropdown.set('')
+
+
+def submit_info(student_id_entry,academic_year_dropdown,semester_dropdown,root,frame):
+    """Submit the entered information (placeholder functionality)."""
+    student_id = student_id_entry.get().strip()
+    academic_year = academic_year_dropdown.get().strip()
+    semester = semester_dropdown.get().strip()
+
+    from tkinter import messagebox
+
+    # Validation for empty fields
+    if not student_id or not academic_year or not semester:
+        messagebox.showwarning("Input Error","All fields are required!")
+    else:
+        from Database.admin_Actions import get_student_grades_for_semester
+        grades=get_student_grades_for_semester(student_id,academic_year,semester)
+
+        if grades!= None:
+            root.stdID = student_id
+            root.semester =semester
+            root.year = academic_year
+            
+            frame.destroy()
+            from admin_add_student_grade import std_grade_info
+            std_grade_info(root,grades)
+
+
+
 def std_info(root):
     # Create a frame for the admin navbar
     frame = tk.Frame(root, bg="white", bd=2, relief="solid", padx=20, pady=20)
@@ -46,47 +86,23 @@ def std_info(root):
     submit_button = tk.Button(button_frame, text="Submit", font=("Arial", 12), bg="#007bff", fg="white", width=12, command= lambda: submit_info(student_id_entry,academic_year_dropdown,semester_dropdown,root,frame))
     submit_button.pack(side=tk.LEFT, padx=10)
 
-
-def clear_fields(student_id_entry,academic_year_dropdown,semester_dropdown):
-    """Clear the input fields."""
-    student_id_entry.delete(0, tk.END)
-    academic_year_dropdown.set('')
-    semester_dropdown.set('')
+    backtoStdMenu = tk.Button(frame, text="Back to Menu", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=23,command= lambda: backToMenu(frame,root))
+    backtoStdMenu.pack(pady=(10,0) )
+        
 
 
-def submit_info(student_id_entry,academic_year_dropdown,semester_dropdown,root,frame):
-    """Submit the entered information (placeholder functionality)."""
-    student_id = student_id_entry.get().strip()
-    academic_year = academic_year_dropdown.get().strip()
-    semester = semester_dropdown.get().strip()
 
-    from tkinter import messagebox
 
-    # Validation for empty fields
-    if not student_id or not academic_year or not semester:
-        messagebox.showwarning("Input Error","All fields are required!")
-    else:
-        from Database.admin_Actions import get_student_grades_for_semester
-        grades=get_student_grades_for_semester(student_id,academic_year,semester)
-
-        if grades!= None:
-            root.stdID = student_id
-            root.semester =semester
-            root.year = academic_year
-            
-            frame.destroy()
-            from admin_add_student_grade import std_grade_info
-            std_grade_info(root,grades)
 
 if __name__ == "__main__":
 
     root = tk.Tk()
-    root.geometry("600x500")
+    root.geometry("600x600")
     root.title("Academic Probation")
 
     # Set the background color of the root window to white
     root.configure(bg="white")
-
+    root.adminID = 'adm1'
     std_info(root)
 
     root.mainloop()  # Start the Tkinter main loop
