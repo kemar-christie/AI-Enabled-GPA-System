@@ -1,7 +1,16 @@
 # admin_select_student.py
 
 import tkinter as tk
+from tkinter import ttk
 import tkinter.messagebox as messagebox
+
+def backToMenu(frame,root):
+    frame.destroy()
+    
+    import admin_navbar as adminNav
+    adminNav.admin_navbar(root)
+
+
 
 
 def admin_select_student(root):
@@ -21,6 +30,21 @@ def admin_select_student(root):
     id_entry = tk.Entry(frame, font=('Arial', 12), width=30)
     id_entry.pack(pady=(0, 20))
 
+
+    # Student Year Entry label
+    year_label = tk.Label(frame, text="Academic Year", font=('Arial', 12), bg="white")
+    year_label.pack(pady=(0, 10),anchor='w')
+    
+    # Academic year options
+    academicYear = [
+        '2015/2016', '2016/2017', '2017/2018', '2018/2019', '2019/2020',
+        '2020/2021', '2021/2022', '2022/2023', '2023/2024', '2024/2025'
+    ]
+
+    academic_year_dropdown = ttk.Combobox(frame, values=academicYear, font=('Arial', 12), state="readonly", width=28)
+    academic_year_dropdown.pack(pady=(0, 15))
+
+
     # Desired GPA Entry label
     gpa_label = tk.Label(frame, text="Desired GPA (Optional)", font=('Arial', 12), bg="white")
     gpa_label.pack(pady=(0, 10),anchor='w')
@@ -31,7 +55,7 @@ def admin_select_student(root):
 
     # Button frame for layout
     button_frame = tk.Frame(frame, bg="white")
-    button_frame.pack(fill="x", pady=(10, 0))
+    button_frame.pack(fill="x", pady=(10, 20))
 
     # Back button
     back_btn = tk.Button(
@@ -53,9 +77,12 @@ def admin_select_student(root):
         width=10,
         bg="#007bff",
         fg="white",
-        command=lambda: validate_and_proceed(id_entry.get().strip(), gpa_entry.get().strip())
+        command=lambda: validate_and_proceed(id_entry.get().strip(), gpa_entry.get().strip(),academic_year_dropdown.get(),root,frame)
     )
     next_btn.pack(side="right", padx=10)
+
+    backtoStdMenu = tk.Button(frame, text="Back to Menu", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=23, command= lambda: backToMenu(frame,root))
+    backtoStdMenu.pack()
 
 
 
@@ -66,10 +93,16 @@ def back_to_admin(frame, root):
 
 
 
-def validate_and_proceed(student_id,desired_gpa):  
+def validate_and_proceed(student_id,desired_gpa,academic_year,root,frame):  
+
+
     # Check if the field is empty
     if student_id == "":
         messagebox.showerror("Error", "Please enter a student ID")
+        return
+    
+    if academic_year =="":
+        messagebox.showerror("Error", "Please Select a academic year")
         return
     
     # Check if the input contains only numbers
@@ -97,8 +130,16 @@ def validate_and_proceed(student_id,desired_gpa):
             messagebox.showerror("Invalid Input", "Please enter a numeric GPA value.")
             return
     else :
-        desired_gpa ='N/A'
+        desired_gpa =2.0
 
+    from admin_academic_progress import view_acadmic_progress
+
+    root.academicYear =academic_year
+    root.stdID=student_id
+    root.desiredGPA = desired_gpa
+
+    frame.destroy()
+    view_acadmic_progress(root)
     # If we get here, the input is valid (contains only numbers)
     print(f"Proceeding with student ID: {student_id} and desired GPA {desired_gpa}")
 
@@ -108,6 +149,7 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.geometry("600x600")
     root.title("Admin Select Student")
+    root.adminID = 'adm1'
     root.configure(bg="white")
     
     admin_select_student(root)
