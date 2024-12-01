@@ -21,7 +21,7 @@ CREATE TABLE module (
 CREATE TABLE enroll (
     stdID INT NOT NULL,
     moduleID VARCHAR(20) NOT NULL,
-    semester INT CHECK (semester <= 3),
+    semester INT CHECK (semester IN (1, 2)),
     year VARCHAR(10),
     grade VARCHAR(5),
     PRIMARY KEY (stdID, moduleID, semester, year),
@@ -50,6 +50,50 @@ CREATE TABLE admin (
         password REGEXP '[0-9]'
     )
 );
+
+
+
+DELIMITER $$
+
+CREATE PROCEDURE check_and_add_modules (
+    IN student_id INT,
+    IN semester INT,
+    IN academic_year VARCHAR(10),
+    IN module_ids VARCHAR(255) -- Comma-separated string
+)
+BEGIN
+    DECLARE total_credits INT DEFAULT 0;
+    DECLARE module_exists BOOLEAN DEFAULT FALSE;
+
+    -- Check if modules are already confirmed for the specified semester and year
+    SELECT COUNT(*) > 0 INTO module_exists
+    FROM enroll
+    WHERE stdID = student_id AND semester = semester AND year = academic_year;
+
+    IF module_exists THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Modules already confirmed for the specified semester and year.';
+    END IF;
+
+    -- Calculate the total credits of the provided module IDs
+    SELECT SUM(num_of_credits) INTO total_credits
+    FROM module
+    WHERE FIND_IN_SET(moduleID, module_ids);
+
+    -- Check if total credits are between 9 and 21
+    IF total_credits < 9 OR total_credits > 21 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Total module credits must be between 9 and 21.';
+    END IF;
+
+    -- Insert modules into the enroll table
+    INSERT INTO enroll (stdID, moduleID, semester, year)
+    SELECT student_id, moduleID, semester, academic_year
+    FROM module
+    WHERE FIND_IN_SET(moduleID, module_ids);
+END$$
+
+DELIMITER ;
 
 
 

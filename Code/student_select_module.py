@@ -130,8 +130,8 @@ def addModuleToDatabase(academicYearComboBox, semesterComboBox, table,root):
     total_credits = sum(credits)
 
     # Check if the student has at least the minimum amount of credits in sem 1 or sem 2
-    #student can select modules that come up to less than 9 credit in sem 3 (summer)
-    if total_credits < 9 and (semester== '1' or semester=='2'):
+   
+    if total_credits < 9 :
         messagebox.showinfo("Insufficient Credit", "You need to have a minimum of 9 credits in order to confirm selection.")
         return  # Exit function
     
@@ -185,7 +185,7 @@ def select_module_interface(root):
         
                 
         # Define academic years
-        semester = [1,2,3]
+        semester = [1,2]
         semesterComboBox = ttk.Combobox(frame, width=5, values=semester,state="readonly")
         semesterComboBox.grid(row=2, column=3, sticky='w')
         

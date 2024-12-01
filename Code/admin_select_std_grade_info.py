@@ -106,3 +106,4 @@ if __name__ == "__main__":
     std_info(root)
 
     root.mainloop()  # Start the Tkinter main loop
+

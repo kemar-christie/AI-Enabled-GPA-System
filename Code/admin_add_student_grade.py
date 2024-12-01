@@ -103,7 +103,7 @@ def std_grade_info(root,grades):
     label = tk.Label(frame, text="Add Student Grades", font=('default', 16), bg="white")
     label.pack(pady=(0, 20))
 
-    label = tk.Label(frame, text=f"Welcome {adminName}", font=('default', 12), bg="white", anchor='w')
+    label = tk.Label(frame, text=f"Admin Name:  {adminName}", font=('default', 12), bg="white", anchor='w')
     label.pack()
 
     # Horizontal separator line
