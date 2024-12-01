@@ -1,11 +1,11 @@
 # Dwyane Gibbs
-import pyswip
+from pyswip import Prolog
 import os
 
 
 # Load the Prolog file
-prolog_file = os.path.join(os.getcwd(), "prolog_knowledge_base.pl")
-prolog.consult(prolog_file)
+prolog = Prolog
+prolog.consult("prolog_knowledge_base.pl")
 
 
 def get_grade_info(score):
