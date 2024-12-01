@@ -1,6 +1,5 @@
 # Dwyane Gibbs
 from pyswip import Prolog
-import os
 
 
 # Load the Prolog file
