@@ -209,6 +209,7 @@ def get_student_grades_for_semester(student_id, year, semester):
 
 
 
+
 def update_student_grade(studentID, moduleID, semester, year, grade):
     """Update the grade for a student's module enrollment."""
     
@@ -307,3 +308,80 @@ def get_student_grades_and_credits(student_id, academic_year):
         cursor.close()
         dbConn.close()
         print("Database connection closed.")
+
+
+
+
+
+def get_student_alert_emails(student_id):
+    try:
+        # Get database connection
+        dbConn = get_db_connection()  # Assuming you have a function for DB connection
+        
+        # Query to get the student's full name, email addresses, programme, and school
+        query = """
+            SELECT s.full_name, s.email_address, s.programme, s.school, a.faculty_admin_email, a.advisor_email, a.prog_dir_email
+            FROM alert a
+            JOIN student s ON a.stdID = s.stdID
+            WHERE a.stdID = %s
+        """
+        cursor = dbConn.cursor(dictionary=True)
+        cursor.execute(query, (student_id,))
+        result = cursor.fetchone()
+
+        if result:
+            # Return the full name, email, programme, school, and alert emails as a list
+            return [
+                result['full_name'],            # Student's full name
+                result['email_address'],        # Student's email
+                result['programme'],            # Student's programme
+                result['school'],               # Student's school
+                result['faculty_admin_email'],  # Faculty admin's email
+                result['advisor_email'],        # Advisor's email
+                result['prog_dir_email']        # Program director's email
+            ]
+        else:
+            # Handle case where no result is found for the student
+            messagebox.showerror("Error", "No alert details found for the given student.")
+            return []
+
+    except mysql.Error as e:
+        # Error handling
+        messagebox.showerror("Database Error", f"Error occurred: {str(e)}")
+        return []
+    finally:
+        if dbConn.is_connected():
+            cursor.close()
+            dbConn.close()
+
+
+
+def get_all_student_ids():
+    try:
+        # Get database connection
+        dbConn = get_db_connection()
+
+        # Query to get all student IDs
+        query = "SELECT stdID FROM student"
+        
+        # Create a cursor and execute the query
+        cursor = dbConn.cursor()
+        cursor.execute(query)
+        
+        # Fetch all results
+        result = cursor.fetchall()
+
+        # Extract and return all student IDs as a list
+        student_ids = [row[0] for row in result]
+        return student_ids
+
+    except mysql.connector.Error as e:
+        # Handle database query errors
+        messagebox.showerror("Database Error", f"Error occurred: {str(e)}")
+        return []
+
+    finally:
+        # Ensure the connection is closed after the query
+        if dbConn.is_connected():
+            cursor.close()
+            dbConn.close()

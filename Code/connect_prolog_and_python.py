@@ -6,8 +6,18 @@ from pyswip import Prolog
 # Load the Prolog file
 prolog = pyswip.Prolog()
 
+# Python flag to track if the file has been consulted
+file_consulted = False  # Initially set the flag to False, indicating the file hasn't been consulted yet.
+
 def consult_prolog():
-    prolog.consult("prolog_knowledge_base.pl")
+    global file_consulted  # Declare that we are using the global variable 'file_consulted'
+    
+    if not file_consulted:  # Check if the flag is False (file has not been consulted yet)
+        prolog.consult("prolog_knowledge_base.pl")  # Consult the Prolog knowledge base (load it into memory)
+        file_consulted = True  # After consulting, set the flag to True (indicating the file has been consulted)
+        print("Prolog file consulted.")  # Print a message indicating the file has been consulted
+    else:
+        print("Prolog file has already been consulted.")  # If the flag is True, print this message (file already consulted)
 
 
 # Define a function to get the letter grade and grade point for a given score
@@ -39,6 +49,7 @@ def update_default_gpa(new_gpa):
     except Exception as e:
         print(f"Error updating default GPA: {e}")
         return False
+
 
 # Function to get the current default GPA
 def get_default_gpa():
@@ -95,6 +106,6 @@ print(result)
 consult_prolog()
 print("default : " + str(get_default_gpa()))
 update_default_gpa(3.0)
+consult_prolog()
 print("default : " + str(get_default_gpa()))
-
 '''

@@ -1,6 +1,8 @@
 from Database.database_connection import get_db_connection
 #from database_connection import get_db_connection
 import tkinter.messagebox as messagebox
+import mysql.connector
+
 
 def get_all_modules():
     # Create a database connection
@@ -89,3 +91,39 @@ def add_modules_to_enroll(academic_year, semester, student_id, table):
         print("Database connection closed.")      
 
 
+def find_latest_academic_year_with_all_grades(student_id):
+    try:
+        # Get database connection
+        dbConn = get_db_connection()
+        cursor = dbConn.cursor(dictionary=True)
+
+        # Query to find the latest academic year where the student has enrolled and received grades
+        query = """
+            SELECT year
+            FROM enroll
+            WHERE stdID = %s
+              AND grade IS NOT NULL
+            GROUP BY year
+            HAVING COUNT(DISTINCT semester) = 2
+            ORDER BY year DESC
+            LIMIT 1
+        """
+        
+        cursor.execute(query, (student_id,))
+        result = cursor.fetchone()
+
+        if result:
+            # Return the latest academic year found
+            return result['year']
+        else:
+            # Show error message if no records are found
+            messagebox.showerror("No Records Found", "The student has not received grades for both semesters in any academic year.")
+            return None
+    except mysql.connector.Error as err:
+        # Handle any database errors
+        messagebox.showerror("Database Error", f"Error occurred: {err}")
+        return None
+    finally:
+        if dbConn.is_connected():
+            cursor.close()
+            dbConn.close()

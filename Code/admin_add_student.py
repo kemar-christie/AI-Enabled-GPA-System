@@ -87,7 +87,7 @@ def validation( fullNameEntry, emailEntry, passwordEntry, schoolEntry, programme
     else:
 
         import Database.admin_Actions as adminAction
-        adminAction.add_student_and_alert(fullName,email,password,school,programme,advName,advEmail,progDirName,progDirEmail,facAdminEmail,facAdminName)
+        adminAction.add_student_and_alert(fullName,email,password,school,programme,advName,advEmail,progDirName,progDirEmail,facAdminName,facAdminEmail)
         
         #clear all data in the field
         clearAll(fullNameEntry, emailEntry, passwordEntry, schoolEntry, programmeEntry,advNameEntry, advEmailEntry, progDirNameEntry, progDirEmailEntry, facAdminNameEntry, facAdminEmailEntry)

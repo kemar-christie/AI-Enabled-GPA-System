@@ -11,7 +11,11 @@ def moduleEnrollment(frame,root):
 
     import student_select_module as stdModule
     stdModule.select_module_interface(root)
-    
+
+def viewAcademicProgress(frame,root):
+    frame.destroy()
+    from student_view_academic_progress import view_acadmic_progress
+    view_acadmic_progress(root)
 
 def student_navbar(root):
     # Create a frame for the student navbar
@@ -26,7 +30,7 @@ def student_navbar(root):
     enrollButton = tk.Button(frame, text="Module Enrollment", font=("Arial", 12), padx=20, bg="#007bff",fg="white", width=12, command= lambda: moduleEnrollment(frame,root))
     enrollButton.grid(row=1, column=0, sticky="e", padx=(0,10))
 
-    academicProgButton = tk.Button(frame, text="Academic Progress", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12)
+    academicProgButton = tk.Button(frame, text="Academic Progress", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12,command= lambda: viewAcademicProgress(frame,root))
     academicProgButton.grid(row=1, column=1, sticky="e", padx=(0,10))
 
     exitButton = tk.Button(frame, text="Logout", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=12, command= lambda: backToLogin(frame,root))
@@ -43,7 +47,7 @@ if __name__ == "__main__":
     # Set the background color of the root window to white
     root.configure(bg="white")
     
-    root.stdID='2400000'
+    root.stdID='2400026'
     student_navbar(root)
 
     root.mainloop()  # Start the Tkinter main loop

@@ -26,9 +26,12 @@ def admin_select_student(root):
     id_label = tk.Label(frame, text="Enter Student ID", font=('Arial', 12), bg="white")
     id_label.pack(pady=(0, 10),anchor='w')
 
+    from Database.admin_Actions import get_all_student_ids
+    allStdID=get_all_student_ids()
+
     # Student ID Entry field
-    id_entry = tk.Entry(frame, font=('Arial', 12), width=30)
-    id_entry.pack(pady=(0, 20))
+    studentId_dropdown = ttk.Combobox(frame,values= allStdID,font=('Arial', 12), width=28,state="readonly")
+    studentId_dropdown.pack(pady=(0, 20))
 
 
     # Student Year Entry label
@@ -77,12 +80,9 @@ def admin_select_student(root):
         width=10,
         bg="#007bff",
         fg="white",
-        command=lambda: validate_and_proceed(id_entry.get().strip(), gpa_entry.get().strip(),academic_year_dropdown.get(),root,frame)
+        command=lambda: validate_and_proceed(studentId_dropdown.get().strip(), gpa_entry.get().strip(),academic_year_dropdown.get(),root,frame)
     )
     next_btn.pack(side="right", padx=10)
-
-    backtoStdMenu = tk.Button(frame, text="Back to Menu", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=23, command= lambda: backToMenu(frame,root))
-    backtoStdMenu.pack()
 
 
 
@@ -98,7 +98,7 @@ def validate_and_proceed(student_id,desired_gpa,academic_year,root,frame):
 
     # Check if the field is empty
     if student_id == "":
-        messagebox.showerror("Error", "Please enter a student ID")
+        messagebox.showerror("Error", "Please select a student ID")
         return
     
     if academic_year =="":
@@ -161,19 +161,34 @@ def validate_and_proceed(student_id,desired_gpa,academic_year,root,frame):
         prologConn.update_default_gpa(desired_gpa)
     
     #call a function that is linked to the prolog code that processes the grades and credits 
-    # and output the sem 1, sem2 and cumulative GPA
-    
+    # and output the sem 1, sem2 and cumulative GPA in a comma sperated string
     allGPA=prologConn.process_student_grades(sem1Credit,sem1Grade,sem2Credit,sem2Grade)
-    allGPA= allGPA.split(',')
+    allGPA= allGPA.split(',')#put each element in the comma seperated string in its own index
     
-    root.sem1GPA=allGPA[0]
-    root.sem2GPA=allGPA[1]
-    root.cumGPA= allGPA[2]
+    root.sem1GPA=allGPA[0] #sem1 GPA
+    root.sem2GPA=allGPA[1]  #sem2 GPA
+    root.cumGPA= allGPA[2]  #cumulative GPA
+
+    sendMail(student_id,desired_gpa,allGPA[2])
     
     frame.destroy()
     from admin_academic_progress import view_acadmic_progress
     view_acadmic_progress(root)
     
+
+
+def sendMail(stdID,desired_gpa,cumulativeGPA):
+
+    #determines if stdent is on probation by comparing if desired gpa is greater than cumulative GPA
+    if desired_gpa > float(cumulativeGPA):
+
+        #query database to get the email of the student as well as email of their faculty admin, advisor and program director
+        #The query also retrieved the school, programme and name of the student
+        from Database.admin_Actions import get_student_alert_emails
+        stdName,student_email,programme,school,faculty_admin_email,advisor_email,prog_dir_email=get_student_alert_emails(stdID)
+
+        from sending_email import send_email
+        send_email(student_email,f"{faculty_admin_email}; {advisor_email}; {prog_dir_email};",cumulativeGPA,desired_gpa,programme,school,stdName,stdID)
 
 
 if __name__ == "__main__":

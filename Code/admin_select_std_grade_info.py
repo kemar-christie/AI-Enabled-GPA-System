@@ -9,16 +9,16 @@ def backToMenu(frame,root):
     import admin_navbar as adminNav
     adminNav.admin_navbar(root)
 
-def clear_fields(student_id_entry,academic_year_dropdown,semester_dropdown):
+def clear_fields(studentID_dropdown,academic_year_dropdown,semester_dropdown):
     """Clear the input fields."""
-    student_id_entry.delete(0, tk.END)
+    studentID_dropdown.set('')
     academic_year_dropdown.set('')
     semester_dropdown.set('')
 
 
-def submit_info(student_id_entry,academic_year_dropdown,semester_dropdown,root,frame):
+def submit_info(studentID_dropdown,academic_year_dropdown,semester_dropdown,root,frame):
     """Submit the entered information (placeholder functionality)."""
-    student_id = student_id_entry.get().strip()
+    student_id = studentID_dropdown.get().strip()
     academic_year = academic_year_dropdown.get().strip()
     semester = semester_dropdown.get().strip()
 
@@ -60,13 +60,19 @@ def std_info(root):
     ]
     
     # Semester options
-    semesters = ['1', '2', '3']
+    semesters = ['1', '2']
+
+    from Database.admin_Actions import get_all_student_ids
+    allStdID=get_all_student_ids()
+
 
     # Labels and input fields
     student_id_label = tk.Label(frame, text="Student ID:", font=('Arial', 12), bg="white")
     student_id_label.pack(anchor="w", pady=5)
-    student_id_entry = tk.Entry(frame, font=('Arial', 12), width=30)
-    student_id_entry.pack(pady=5)
+
+    # Student ID Entry field
+    studentID_dropdown = ttk.Combobox(frame,values= allStdID,font=('Arial', 12), width=28,state="readonly")
+    studentID_dropdown.pack( pady=(0, 5))
 
     academic_year_label = tk.Label(frame, text="Academic Year:", font=('Arial', 12), bg="white")
     academic_year_label.pack(anchor="w", pady=5)
@@ -82,10 +88,10 @@ def std_info(root):
     button_frame = tk.Frame(frame, bg="white")
     button_frame.pack(pady=(20, 0))
 
-    clear_button = tk.Button(button_frame, text="Clear", font=("Arial", 12), bg="#007bff", fg="white", width=12, command= lambda: clear_fields(student_id_entry,academic_year_dropdown,semester_dropdown))
+    clear_button = tk.Button(button_frame, text="Clear", font=("Arial", 12), bg="#007bff", fg="white", width=12, command= lambda: clear_fields(studentID_dropdown,academic_year_dropdown,semester_dropdown))
     clear_button.pack(side=tk.LEFT, padx=10)
 
-    submit_button = tk.Button(button_frame, text="Submit", font=("Arial", 12), bg="#007bff", fg="white", width=12, command= lambda: submit_info(student_id_entry,academic_year_dropdown,semester_dropdown,root,frame))
+    submit_button = tk.Button(button_frame, text="Submit", font=("Arial", 12), bg="#007bff", fg="white", width=12, command= lambda: submit_info(studentID_dropdown,academic_year_dropdown,semester_dropdown,root,frame))
     submit_button.pack(side=tk.LEFT, padx=10)
 
     backtoStdMenu = tk.Button(frame, text="Back to Menu", font=("Arial", 12), padx=20, bg="#007bff", fg="white", width=23,command= lambda: backToMenu(frame,root))

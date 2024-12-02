@@ -3,11 +3,13 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def send_email(receiver_email, cc_emails, gpa, threshold, programme, school, full_name):
+def send_email(receiver_email, cc_emails, gpa, threshold, programme, school, full_name,stdID):
+    
     # Example usage
     sender_email = "academic.notifs@gmail.com"
+
     subject = "Academic Alert: Low GPA"
-    body = (f"Dear {full_name},\n"
+    body = (f"Dear {full_name} - #{stdID},\n"
             f"We are notifying you that your GPA has fallen to {gpa}, "
             f"which is at or below the acceptable threshold of {threshold}.\n\n"
             f"Program: {programme}\n"
@@ -53,7 +55,7 @@ def send_email(receiver_email, cc_emails, gpa, threshold, programme, school, ful
 send_email(
     "davistyo384@gmail.com",  # Main recipient
     "robertojames91@gmail.com; mike@mail.com; tim@mail.com",  # CC recipients
-    1.8, 2.0, "computing", "SCIT", "Tyoni"
+    1.8, 2.0, "computing", "SCIT", "Tyoni",1234567
 )
 
 '''
