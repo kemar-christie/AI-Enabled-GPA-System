@@ -1,6 +1,8 @@
 % Academic Probation Alert Python and Prolog Project. 
 % Authors Dwayne Gibbs, Kemar Christie, Roberto James, Tyoni Davis.
 
+:- dynamic default_gpa/1.  % Declare the default_gpa as dynamic
+
 % Accepts a list for the credits that each module has and the corresponding score a student got and outputs back the letter grade, gpa and grade point. grade point is credit x corresponding GPA.
 process_grades([], [], [], [], []).
 process_grades([Credit|Credits], [Score|Scores], [Letter|Letters], [GPA|GPAs], [Point|Points]) :-
@@ -101,6 +103,8 @@ update_default_gpa(NewGPA) :-
 
 % Check academic probation function maybe needed
 
+
+
 /*
 % Process grades for a semester:
 ?- process_grades([3,4,3,4], [90,40,80,30], Letters, GPAs, Points).
@@ -113,5 +117,7 @@ update_default_gpa(NewGPA) :-
 
 
 test case 
-calculate_cumulative_gpa([[3,3,4,4,3,2,1],[75,50,70,55,40,65,85], [1,4,3,4,2], [90,75,65,70,80], CGPA).
+calculate_cumulative_gpa([3,3,4,4,3,2,1],[75,50,70,55,40,65,85], [1,4,3,4,2], [90,75,65,70,80], CGPA).
+calculate_cumulative_gpa([3,3,4,4,3,2,1],[75,50,70,55,40,65,85], [3,3,4,4,3,2,1],[75,50,70,55,40,65,85], CGPA).
+calculate_cumulative_gpa([3,3,4,4,3,2,1],[75,50,70,55,40,65,85], [], [], CGPA).
 */

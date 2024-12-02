@@ -132,17 +132,48 @@ def validate_and_proceed(student_id,desired_gpa,academic_year,root,frame):
     else :
         desired_gpa =2.0
 
-    from admin_academic_progress import view_acadmic_progress
 
+
+    #check database for student grades
+    from Database.admin_Actions import get_student_grades_and_credits
+    gradesAndCredit=get_student_grades_and_credits(student_id, academic_year)
+
+    #if the student does not exists or no modules were selecteed in that academic year then we exit the function
+    if(gradesAndCredit == None):
+        return
+    
+
+    sem1Credit=[]
+    sem1Grade=[]
+    sem2Credit=[]
+    sem2Grade=[]
+    
+    sem1Credit,sem1Grade,sem2Credit,sem2Grade= gradesAndCredit[0],gradesAndCredit[1],gradesAndCredit[2],gradesAndCredit[3]
     root.academicYear =academic_year
     root.stdID=student_id
-    root.desiredGPA = desired_gpa
 
+    #call the prolog  file to set the gpa to what the user entered
+    import connect_prolog_and_python as prologConn
+    prologConn.consult_prolog()
+
+    #if the gpa is not the default then it will be changes to what the user entered
+    if(desired_gpa != 2.0):
+        prologConn.update_default_gpa(desired_gpa)
+    
+    #call a function that is linked to the prolog code that processes the grades and credits 
+    # and output the sem 1, sem2 and cumulative GPA
+    
+    allGPA=prologConn.process_student_grades(sem1Credit,sem1Grade,sem2Credit,sem2Grade)
+    allGPA= allGPA.split(',')
+    
+    root.sem1GPA=allGPA[0]
+    root.sem2GPA=allGPA[1]
+    root.cumGPA= allGPA[2]
+    
     frame.destroy()
+    from admin_academic_progress import view_acadmic_progress
     view_acadmic_progress(root)
-    # If we get here, the input is valid (contains only numbers)
-    print(f"Proceeding with student ID: {student_id} and desired GPA {desired_gpa}")
-
+    
 
 
 if __name__ == "__main__":

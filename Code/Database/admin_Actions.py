@@ -2,6 +2,7 @@ from Database.database_connection import get_db_connection
 #from database_connection import get_db_connection
 import tkinter as tk
 import tkinter.messagebox as messagebox
+import mysql.connector
 
 def add_student_and_alert(fullname, email, password, school, programme, advisor_name, advisor_email, prog_dir_name, prog_dir_email, fac_admin_name, fac_admin_email):
     # Get the database connection
@@ -246,3 +247,63 @@ def update_student_grade(studentID, moduleID, semester, year, grade):
         cursor.close()
         dbConn.close()
 
+
+
+
+def get_student_grades_and_credits(student_id, academic_year):
+    # Establish database connection
+    dbConn = get_db_connection()
+    cursor = dbConn.cursor()
+    
+    try:
+        # Call the stored procedure
+        cursor.callproc('GetStudentGradesAndCredits', (student_id, academic_year))
+
+        # Fetch the results from the stored procedure
+        results = []
+        for result in cursor.stored_results():
+            results = result.fetchall()
+
+        # Initialize lists for the two semesters
+        sem1_credits = []
+        sem1_grades = []
+        sem2_credits = []
+        sem2_grades = []
+
+        # Loop through the results and segregate them by semester
+        for row in results:
+            semester, grade, credits = row
+            # Ensure that the grade is an integer
+            try:
+                grade = int(grade)
+            except ValueError:
+                grade = None  # If the grade is invalid, set it to None or handle as necessary
+
+            if semester == 1:
+                sem1_credits.append(credits)
+                sem1_grades.append(grade)
+            elif semester == 2:
+                sem2_credits.append(credits)
+                sem2_grades.append(grade)
+
+        # Return the data in the desired format
+        return [sem1_credits, sem1_grades, sem2_credits, sem2_grades]
+
+    except mysql.connector.Error as err:
+        # Handle SQL errors (e.g., custom SIGNAL errors)
+        if err.sqlstate == '45000':
+            messagebox.showerror("Error", err.msg)
+        else:
+            messagebox.showerror("Database Error", f"An error occurred: {err}")
+        return None
+
+    except Exception as e:
+        # Handle other exceptions
+        messagebox.showerror("Error", f"An unexpected error occurred: {e}")
+        return None
+
+    finally:
+        # Close the cursor and database connection
+        cursor.close()
+        dbConn.close()
+        print("Database connection closed.")

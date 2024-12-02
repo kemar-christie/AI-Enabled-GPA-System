@@ -97,6 +97,63 @@ DELIMITER ;
 
 
 
+DELIMITER //
+
+CREATE PROCEDURE GetStudentGradesAndCredits(
+    IN studentID VARCHAR(20),
+    IN academicYear VARCHAR(10)
+)
+BEGIN
+    -- Check if the student exists
+    IF NOT EXISTS (SELECT 1 FROM student WHERE stdID = studentID) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Student does not exist.';
+    END IF;
+
+    -- Check if the student has enrolled in any modules in the specified academic year
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM enroll 
+        WHERE stdID = studentID AND year = academicYear
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No modules found for the student in the specified academic year.';
+    END IF;
+
+    -- Check if the student has grades entered for all modules in the specified academic year
+    IF EXISTS (
+        SELECT 1 
+        FROM enroll e
+        JOIN module m ON e.moduleID = m.moduleID
+        WHERE e.stdID = studentID 
+        AND e.year = academicYear
+        AND e.grade IS NULL
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Not all grades are entered for the student in the specified academic year.';
+    END IF;
+
+    -- Retrieve the grades and credits if checks pass
+    SELECT 
+        e.semester,
+        e.grade,
+        m.num_of_credits
+    FROM 
+        enroll e
+    JOIN 
+        module m ON e.moduleID = m.moduleID
+    WHERE 
+        e.stdID = studentID
+        AND e.year = academicYear
+    ORDER BY 
+        e.semester, e.moduleID;
+
+END //
+
+DELIMITER ;
+
+
+
 INSERT INTO `student` (`stdID`, `full_name`, `password`, `email_address`, `school`, `programme`) VALUES
 (2400000, 'Alice Johnson', 'Stud3nt0', 'alice.johnson@example.com', 'SCIT', 'Computing'),
 (2400001, 'Bob Smith', 'Stud3nt1', 'bob.smith@example.com', 'Utech', 'Business Administration'),

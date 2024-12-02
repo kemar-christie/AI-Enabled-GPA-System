@@ -32,10 +32,12 @@ def submit_info(student_id_entry,academic_year_dropdown,semester_dropdown,root,f
         grades=get_student_grades_for_semester(student_id,academic_year,semester)
 
         if grades!= None:
+            #store stduent info in root object
             root.stdID = student_id
             root.semester =semester
             root.year = academic_year
             
+           
             frame.destroy()
             from admin_add_student_grade import std_grade_info
             std_grade_info(root,grades)
