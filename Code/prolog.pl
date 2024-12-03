@@ -1,3 +1,5 @@
+% GPA Table Matching Respective Percentages to their respective Letter Counterparts
+
 grade_scale('A+', 4.3, 90.0, 100.0).
 grade_scale('A', 4.0, 80.0, 89.99).
 grade_scale('A-', 3.67, 75.0, 79.99).
