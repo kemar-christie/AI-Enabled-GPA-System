@@ -27,25 +27,4 @@ def verify_admin_credentials(adminID, password):
 
 
 
-def verify_student_credentials(stdID, password):
-    # Get the database connection
-    dbConn = get_db_connection()
-    try:
-        cursor = dbConn.cursor()
-        # SQL query to check if a student exists with the provided stdID and password
-        sqlcode = """
-            SELECT 1 FROM student
-            WHERE stdID = %s AND password = %s
-            LIMIT 1;
-        """
-        cursor.execute(sqlcode, (stdID, password))
-        # Fetch the result; if there's a match, it will return a row
-        result = cursor.fetchone()
-        return result is not None  # Returns True if a row is found, False otherwise
-    except Exception as e:
-        messagebox.showerror("Database Error", f"Error adding Student: {e}")
-        return False
-    finally:
-        cursor.close()
-        dbConn.close()
-        print("Database connection closed.")
+
