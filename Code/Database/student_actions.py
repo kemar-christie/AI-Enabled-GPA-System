@@ -30,7 +30,6 @@ def get_all_modules():
     finally:
         cursor.close()
         dbConn.close()
-        print("Database connection closed.")
 
 
 
@@ -60,7 +59,6 @@ def get_student_name(studentID):
     finally:
         cursor.close()
         dbConn.close()
-        print("Database connection closed.")
 
 
 
@@ -93,47 +91,39 @@ def add_modules_to_enroll(academic_year, semester, student_id, table):
 
 def find_latest_academic_year_with_all_grades(student_id):
     try:
-        # Get database connection
-        dbConn = get_db_connection()
-        cursor = dbConn.cursor(dictionary=True)
+        dbConn = get_db_connection()  # Assume this gets your database connection
+        cursor = dbConn.cursor()
 
-        # Query to find the latest academic year where the student has enrolled and received grades
         query = """
-            SELECT year
-            FROM enroll
-            WHERE stdID = %s
-            GROUP BY year
-            HAVING (
-                -- Check if all grades are entered for Semester 1
-                COUNT(CASE WHEN semester = 1 AND grade IS NOT NULL THEN 1 END) = 
-                    (SELECT COUNT(*) 
-                     FROM enroll AS e1 
-                     WHERE e1.year = year AND e1.stdID = %s AND e1.semester = 1)
-                OR
-                -- Check if all grades are entered for Semester 2
-                COUNT(CASE WHEN semester = 2 AND grade IS NOT NULL THEN 1 END) = 
-                    (SELECT COUNT(*) 
-                     FROM enroll AS e2 
-                     WHERE e2.year = year AND e2.stdID = %s AND e2.semester = 2)
-            )
-            ORDER BY year DESC
-            LIMIT 1
+        SELECT MAX(year) AS latest_year
+        FROM enroll e1
+        WHERE e1.stdID = %s
+          AND (
+              NOT EXISTS (
+                  SELECT 1
+                  FROM enroll e2
+                  WHERE e2.stdID = e1.stdID
+                    AND e2.year = e1.year
+                    AND e2.semester = 1
+                    AND e2.grade IS NULL
+              )
+              OR
+              NOT EXISTS (
+                  SELECT 1
+                  FROM enroll e2
+                  WHERE e2.stdID = e1.stdID
+                    AND e2.year = e1.year
+                    AND e2.semester = 2
+                    AND e2.grade IS NULL
+              )
+          )
         """
-        
-        # Pass student_id three times to match the placeholders
-        cursor.execute(query, (student_id, student_id, student_id))
-        result = cursor.fetchone()
 
-        if result:
-            # Return the latest academic year found
-            return result['year']
-        else:
-            # Show error message if no records are found
-            messagebox.showerror("No Records Found", "The student has not received grades for either semester in any academic year.")
-            return None
-    except mysql.connector.Error as err:
-        # Handle any database errors
-        messagebox.showerror("Database Error", f"Error occurred: {err}")
+        cursor.execute(query, (student_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None
+    except Exception as e:
+        print(f"Error: {e}")
         return None
     finally:
         if dbConn.is_connected():

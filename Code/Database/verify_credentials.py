@@ -23,7 +23,6 @@ def verify_admin_credentials(adminID, password):
     finally:
         cursor.close()
         dbConn.close()
-        print("Database connection closed.")
 
 
 
@@ -48,4 +47,3 @@ def verify_student_credentials(stdID, password):
     finally:
         cursor.close()
         dbConn.close()
-        print("Database connection closed.")
