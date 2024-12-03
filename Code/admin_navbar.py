@@ -18,9 +18,9 @@ def backToLogin(frame,root):
 
 def request_stdID_and_gpa(root,frame):
     frame.destroy()
-
-    import admin_select_student as admSelStd
-    admSelStd.admin_select_student(root)
+    root.academicYear="2024/2025"
+    from admin_academic_progress import view_acadmic_progress
+    view_acadmic_progress(root)
 
 
 def addModule(frame,root):

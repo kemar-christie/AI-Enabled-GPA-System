@@ -10,7 +10,6 @@ def get_db_connection():
         
         # Check if the connection was successful
         if dbConn.is_connected():
-            print("Connection to the database was successful!")
             return dbConn
     except Error as e:
         # Print an error message if the connection failed

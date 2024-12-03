@@ -57,7 +57,6 @@ def add_student_and_alert(fullname, email, password, school, programme, advisor_
     finally:
         cursor.close()
         dbConn.close()
-        print("Database connection closed.")
         return True
 
 def display_info_in_large_font(info_message):
@@ -307,7 +306,6 @@ def get_student_grades_and_credits(student_id, academic_year):
         # Close the cursor and database connection
         cursor.close()
         dbConn.close()
-        print("Database connection closed.")
 
 
 
@@ -385,3 +383,57 @@ def get_all_student_ids():
         if dbConn.is_connected():
             cursor.close()
             dbConn.close()
+
+
+def get_students_with_all_grades_in_semester(year):
+    try:
+        # Establish the database connection
+        dbConn = get_db_connection() 
+        cursor = dbConn.cursor()
+
+        # SQL query to fetch students with all grades for either Semester 1 or Semester 2 or both in the specified academic year
+        query = """
+        SELECT s.stdID, s.full_name
+        FROM student s
+        WHERE EXISTS (
+            SELECT 1
+            FROM enroll e
+            WHERE e.stdID = s.stdID
+            AND e.grade IS NOT NULL
+            AND e.year = %s
+            AND e.semester = 1
+            GROUP BY e.stdID, e.year
+            HAVING COUNT(DISTINCT e.moduleID) = (SELECT COUNT(*) FROM enroll WHERE stdID = e.stdID AND year = e.year AND semester = 1)
+        )
+        OR EXISTS (
+            SELECT 1
+            FROM enroll e
+            WHERE e.stdID = s.stdID
+            AND e.grade IS NOT NULL
+            AND e.year = %s
+            AND e.semester = 2
+            GROUP BY e.stdID, e.year
+            HAVING COUNT(DISTINCT e.moduleID) = (SELECT COUNT(*) FROM enroll WHERE stdID = e.stdID AND year = e.year AND semester = 2)
+        )
+        """
+
+        # Execute the query with the year parameter
+        cursor.execute(query, (year, year))
+        result = cursor.fetchall()
+
+        # Process the result into a list of lists
+        student_list = [[student[0], student[1]] for student in result]
+
+        # Return the list of student IDs and names
+        return student_list
+
+    except mysql.connector.Error as err:
+        # Handle any database errors
+        messagebox.showerror("Database Error", f"Error occurred: {err}")
+        return None
+    finally:
+        # Ensure the connection is closed
+        if dbConn.is_connected():
+            cursor.close()
+            dbConn.close()
+

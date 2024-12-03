@@ -68,7 +68,7 @@ def verifyLoginDetails(id,password,userType,root,frame):
 
 
 def login_interface(root):
-    frame = tk.Frame(root,bg="white")
+    frame = tk.Frame(root,bg="white", bd=2, relief="solid", padx=20, pady=20)
     frame.pack(expand=True)#keeps the  content in the center of the window
 
     label = tk.Label(frame, text="Login", font=('default', 20),bg="white")

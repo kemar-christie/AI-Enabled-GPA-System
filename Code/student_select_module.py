@@ -159,7 +159,7 @@ def select_module_interface(root):
     else:
         from tkinter import ttk
         stdNameAndID = "Student : " + root.stdID +" - " + stdName
-        frame = tk.Frame(root, bg="white")
+        frame = tk.Frame(root, bg="white", bd=2, relief="solid", padx=20, pady=20)
         frame.pack(expand=True)  # keeps the content in the center of the window
 
         # Title label

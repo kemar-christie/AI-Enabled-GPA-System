@@ -203,7 +203,7 @@ def add_module_interface(root):
     if adminName is None:
         return 
 
-    frame = tk.Frame(root, bg="white")
+    frame = tk.Frame(root, bg="white", bd=2, relief="solid", padx=10, pady=10)
     frame.pack(expand=True)  # keeps the content in the center of the window
 
     label = tk.Label(frame, text="Add Modules", font=('default', 20), bg="white")
