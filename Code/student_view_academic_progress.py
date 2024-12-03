@@ -25,6 +25,7 @@ def getStudentGPA(root, specifiedYear):
         gradesAndCredit=get_student_grades_and_credits(root.stdID, root.academicYear)
     else:
         gradesAndCredit=get_student_grades_and_credits(root.stdID, specifiedYear)
+        
 
 
     #if the student does not exists or no modules were selecteed in that academic year then we exit the function
@@ -39,7 +40,7 @@ def getStudentGPA(root, specifiedYear):
     
     #stored credit and grade detail that was returned from database
     sem1Credit,sem1Grade,sem2Credit,sem2Grade= gradesAndCredit[0],gradesAndCredit[1],gradesAndCredit[2],gradesAndCredit[3]
-    
+
     #call the prolog  file to set the gpa to what the user entered
     import connect_prolog_and_python as prologConn
     
@@ -47,7 +48,7 @@ def getStudentGPA(root, specifiedYear):
     # and output the sem 1, sem2 and cumulative GPA in a comma sperated string
     allGPA=prologConn.process_student_grades(sem1Credit,sem1Grade,sem2Credit,sem2Grade)
     allGPA= allGPA.split(',')#put each element in the comma seperated string in its own index
-    
+
     return[allGPA[0],allGPA[1],allGPA[2]]
 
 
@@ -68,7 +69,6 @@ def on_select(event, academicYear_dropdown,sem1GPALabel,sem2GPALabel,cumGPALabel
     academicYear_dropdown.set(root.academicYear)
 
     sem1GPA,sem2GPA,cumGPA= gpaInfo
-
     sem1GPALabel.config(text=sem1GPA)
     sem2GPALabel.config(text=sem2GPA)
     cumGPALabel.config(text=cumGPA)
@@ -169,7 +169,7 @@ def view_acadmic_progress(root):
     
     #get the student GPA 
     sem1GPA,sem2GPA,cumGPA=getStudentGPA(root,None)
-    
+
     #label that display sem1GPA
     sem1GPALabel = tk.Label(stdInfoFrame, text=sem1GPA, font=('default', 10), bg="white")
     sem1GPALabel.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
@@ -196,7 +196,7 @@ if __name__ == "__main__":
 
     # Set the background color of the root window to white
     root.configure(bg="white")
-    root.stdID='2400026'
+    root.stdID='2400033'
     view_acadmic_progress(root)
 
     root.mainloop()  # Start the Tkinter main loop

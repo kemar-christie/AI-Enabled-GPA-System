@@ -5,7 +5,7 @@ import tkinter.messagebox as messagebox
 def get_db_connection():
     try:
 
-        # Attempt to establish a connection to the MySQL database
+        # Attempt to establish a connection to the online MySQL database
         dbConn = mysql.connector.connect(host="sql5.freesqldatabase.com",user="sql5741398",password="6L6Cfq6Msn",database="sql5741398")
         
         # Check if the connection was successful

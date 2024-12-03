@@ -91,9 +91,10 @@ def add_modules_to_enroll(academic_year, semester, student_id, table):
 
 def find_latest_academic_year_with_all_grades(student_id):
     try:
-        dbConn = get_db_connection()  # Assume this gets your database connection
+        dbConn = get_db_connection() 
         cursor = dbConn.cursor()
 
+        #retrieves that latest academic with that has all the student grades for sem 1 or sem 2 or both 
         query = """
         SELECT MAX(year) AS latest_year
         FROM enroll e1
@@ -119,9 +120,9 @@ def find_latest_academic_year_with_all_grades(student_id):
           )
         """
 
-        cursor.execute(query, (student_id,))
-        result = cursor.fetchone()
-        return result[0] if result else None
+        cursor.execute(query, (student_id,))#execute the query and pass the student_id to it
+        result = cursor.fetchone()#store the year that was recieved in a variable
+        return result[0] if result else None#return the year but if the query did not return anything return none
     except Exception as e:
         print(f"Error: {e}")
         return None

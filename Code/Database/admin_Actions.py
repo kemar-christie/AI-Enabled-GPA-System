@@ -28,7 +28,7 @@ def add_student_and_alert(fullname, email, password, school, programme, advisor_
         if result:
             stdID = result[0]
 
-            # Prepare the confirmation message
+            # Prepare the confirmation message to be displayes in a window
             info_message = (
                 "Student info added successfully:\n\n"
                 "• Student name: " + fullname + "\n"
@@ -47,6 +47,7 @@ def add_student_and_alert(fullname, email, password, school, programme, advisor_
             # Create a new window to display the information with a larger font
             display_info_in_large_font(info_message)
         else:
+            #show error in a message box
             messagebox.showerror("Database Error", "No student record found after insertion.")
 
     except Exception as e:
@@ -116,7 +117,9 @@ def add_modules_to_database(table):
 
         # Check if all modules are unique in the database
         duplicate_modules = []
+        #iteraters through the table records
         for item in table.get_children():
+            #retrieves that module ID for each record
             module_code = table.item(item, 'values')[0]
             
             # Check if the module code already exists in the database
@@ -181,21 +184,23 @@ def get_student_grades_for_semester(student_id, year, semester):
     try:
         cursor = dbConn.cursor()
 
-        # Call the stored procedure
+        # Call the stored procedure that returns a result set of students grade for a semester
         cursor.callproc('get_student_grades_for_semester', (student_id, year, semester))
 
         # Fetch the result
         grades = None
         for result in cursor.stored_results():
-            grades = result.fetchall()
+            grades = result.fetchall()#if a result set is returned it is stored in grades
 
         if grades:
             return grades
         else:
+            #if no result set ws returned the the user ill be alerted
             messagebox.showinfo("No Grades Found", "No grades found for this student in the specified year and semester.")
             return None
 
     except Exception as e:
+        #if the error that as returned from the Database Procedure is Student not found then the user will be alerted
         if "Student not found" in str(e):
             messagebox.showinfo("Student Not Found", "The specified student does not exist.")
         else:
@@ -239,7 +244,7 @@ def update_student_grade(studentID, moduleID, semester, year, grade):
             return False
         
     except Exception as err:
-        # Handle any database connection or query errors
+        # Displays any database query errors
         messagebox.showerror("Error", f"Error: {err}")
 
     finally:
@@ -256,7 +261,7 @@ def get_student_grades_and_credits(student_id, academic_year):
     cursor = dbConn.cursor()
     
     try:
-        # Call the stored procedure
+        # Call the stored procedure to return a student's grades and credits
         cursor.callproc('GetStudentGradesAndCredits', (student_id, academic_year))
 
         # Fetch the results from the stored procedure
@@ -314,7 +319,7 @@ def get_student_grades_and_credits(student_id, academic_year):
 def get_student_alert_emails(student_id):
     try:
         # Get database connection
-        dbConn = get_db_connection()  # Assuming you have a function for DB connection
+        dbConn = get_db_connection()  
         
         # Query to get the student's full name, email addresses, programme, and school
         query = """

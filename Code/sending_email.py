@@ -17,7 +17,7 @@ def send_email(receiver_email, cc_emails, gpa, threshold, programme, school, ful
             f"Best regards,\nYour University")
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
-    sender_password = "sakw teqf ocrd ctrn"  # Use an app password if you have 2FA
+    sender_password = "dooz bssh khdc ojnc"  # Use an app password if you have 2FA
 
     # Split CC emails if provided as a single string
     if isinstance(cc_emails, str):
@@ -49,13 +49,3 @@ def send_email(receiver_email, cc_emails, gpa, threshold, programme, school, ful
         
     finally:
         server.quit()  # Close the connection
-
-# Call the function with a primary email and CC recipients
-'''
-send_email(
-    "davistyo384@gmail.com",  # Main recipient
-    "robertojames91@gmail.com; mike@mail.com; tim@mail.com",  # CC recipients
-    1.8, 2.0, "computing", "SCIT", "Tyoni",1234567
-)
-
-'''

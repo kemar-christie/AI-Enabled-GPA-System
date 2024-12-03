@@ -93,19 +93,3 @@ def process_student_grades(sem1Credit, sem1Grade, sem2Credit, sem2Grade):
 
 
    
-'''
-sem1Credit=[3,3,4,4,3,2,1]
-sem1Grade =[75,50,70,55,40,65,85]
-sem2Credit=[]
-sem2Grade =[]
-consult_prolog()
-result=process_student_grades(sem1Credit,sem1Grade,sem2Credit,sem2Grade)
-print(result)
-
-
-consult_prolog()
-print("default : " + str(get_default_gpa()))
-update_default_gpa(3.0)
-consult_prolog()
-print("default : " + str(get_default_gpa()))
-'''

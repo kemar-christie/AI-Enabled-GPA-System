@@ -4,16 +4,15 @@ import tkinter.messagebox as messagebox
 
 
 def backToMenu(frame,root):
-    frame.destroy()
+    frame.destroy()#removes current frame
     
     import admin_navbar as adminNav
-    adminNav.admin_navbar(root)
+    adminNav.admin_navbar(root)#display the admin_navbar
 
 def getStudentGPA(stdID, specifiedYear):
 
+    #query the database and get all the student grades and credits for a specified semester
     from Database.admin_Actions import get_student_grades_and_credits
-
-
     gradesAndCredit=get_student_grades_and_credits(stdID, specifiedYear)
 
 
@@ -29,19 +28,23 @@ def getStudentGPA(stdID, specifiedYear):
     #call the prolog  file to set the gpa to what the user entered
     import connect_prolog_and_python as prologConn
     
-    #call a function that is linked to the prolog code that processes the grades and credits 
+    #call a function that is linked to the prolog knowledgebase that processes the grades and credits 
     # and output the sem 1, sem2 and cumulative GPA in a comma sperated string
     allGPA=prologConn.process_student_grades(sem1Credit,sem1Grade,sem2Credit,sem2Grade)
     allGPA= allGPA.split(',')#put each element in the comma seperated string in its own index
     
+    #return the calculate result from prolog
     return[allGPA[0],allGPA[1],allGPA[2]]
 
 
 
 def addGPADetails(studentRecord,table,academicYear):
+    
+    #get the default gpa from prolog
     import connect_prolog_and_python as prologConn
     prologConn.consult_prolog
     defaultGPA=prologConn.get_default_gpa()
+
     #iterate through the list of all studentsID
     for stdID in studentRecord:
         #passes the default academic year and stID to get student GPA info
@@ -57,15 +60,12 @@ def addGPADetails(studentRecord,table,academicYear):
     else:
         messagebox.showinfo("Records generated",f"{recordCount} students are below the threshold")
 
-def backToMenu(frame,root):
-    frame.destroy()
-    
-    import admin_navbar as adminNav
-    adminNav.admin_navbar(root)
 
 
 def modifyTable(table,root,academic_year_dropdown):
     
+    #queries the database to get a list with all the student id and name that have all their
+    #grades for the selected year
     from Database.admin_Actions import get_students_with_all_grades_in_semester
     studentRecord=get_students_with_all_grades_in_semester(academic_year_dropdown.get())
 
@@ -111,9 +111,12 @@ def validate_and_proceed(desired_gpa,root,desired_GPA_label,table,academicYearVa
                 for row in table.get_children():
                     table.delete(row)
 
+                #queries the database to get a list with all the student id and name that have all their
+                #grades for the selected year
                 from Database.admin_Actions import get_students_with_all_grades_in_semester
                 studentRecords=get_students_with_all_grades_in_semester(academicYearValue)
 
+                #calls a function that add the records to the table if the they are below the desire GPA amount
                 addGPADetails(studentRecords,table,academicYearValue)
 
             
@@ -127,12 +130,13 @@ def validate_and_proceed(desired_gpa,root,desired_GPA_label,table,academicYearVa
         messagebox.showerror("Empty Field","Enter your a new GPA threshold")
 
 
-def showGUI(desired_GPA_label,table,academicYearValue):
+#this function displays a window that allows the user to enter a gpa
+def updateGPAGUI(desired_GPA_label,table,academicYearValue):
+    
+    #create the window
     root = tk.Tk()
     root.geometry("300x300")
     root.title("Update GPA")
-
-    # Set the background color of the root window to white
     root.configure(bg="white")
 
 
@@ -158,7 +162,7 @@ def showGUI(desired_GPA_label,table,academicYearValue):
     )
     confirmBtn.pack( padx=10)
 
-    root.mainloop()  # Start the Tkinter main loop
+    root.mainloop()  # display the window
 
 
 def sendAlert(table):
@@ -170,6 +174,7 @@ def sendAlert(table):
     if len(table.get_children()) == 0 :
         messagebox.showerror("No records","No student in this academic Year is below the threshold")
         return
+    
     email_status=False
     # Consult the Prolog knowledge base and get the default GPA threshold
     prologConn.consult_prolog()
@@ -288,7 +293,7 @@ def view_acadmic_progress(root):
     backtoStdMenu = tk.Button(buttonFrame, text="Back to Menu", font=("Arial", 10), bg="#007bff", fg="white", width=10, command= lambda: backToMenu(frame,root))
     backtoStdMenu.pack(side=tk.LEFT, padx=(0,10))
 
-    updateGPABtn=tk.Button(buttonFrame,text="Update Default GPA", command=lambda: showGUI(desired_GPA_label,table,academic_year_dropdown.get()))
+    updateGPABtn=tk.Button(buttonFrame,text="Update Default GPA", command=lambda: updateGPAGUI(desired_GPA_label,table,academic_year_dropdown.get()))
     updateGPABtn.pack(side=tk.LEFT, padx=(0,10))
     
     sendEmailBtn=tk.Button(buttonFrame,text="Send Alerts", command=lambda: sendAlert(table))
