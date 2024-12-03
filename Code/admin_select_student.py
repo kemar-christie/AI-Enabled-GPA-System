@@ -11,8 +11,6 @@ def backToMenu(frame,root):
     adminNav.admin_navbar(root)
 
 
-
-
 def admin_select_student(root):
     # Create main frame
     frame = tk.Frame(root, bg="white", bd=2, relief="solid", padx=20, pady=20)
