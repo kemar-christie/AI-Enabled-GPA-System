@@ -102,14 +102,26 @@ def find_latest_academic_year_with_all_grades(student_id):
             SELECT year
             FROM enroll
             WHERE stdID = %s
-              AND grade IS NOT NULL
             GROUP BY year
-            HAVING COUNT(DISTINCT semester) = 2
+            HAVING (
+                -- Check if all grades are entered for Semester 1
+                COUNT(CASE WHEN semester = 1 AND grade IS NOT NULL THEN 1 END) = 
+                    (SELECT COUNT(*) 
+                     FROM enroll AS e1 
+                     WHERE e1.year = year AND e1.stdID = %s AND e1.semester = 1)
+                OR
+                -- Check if all grades are entered for Semester 2
+                COUNT(CASE WHEN semester = 2 AND grade IS NOT NULL THEN 1 END) = 
+                    (SELECT COUNT(*) 
+                     FROM enroll AS e2 
+                     WHERE e2.year = year AND e2.stdID = %s AND e2.semester = 2)
+            )
             ORDER BY year DESC
             LIMIT 1
         """
         
-        cursor.execute(query, (student_id,))
+        # Pass student_id three times to match the placeholders
+        cursor.execute(query, (student_id, student_id, student_id))
         result = cursor.fetchone()
 
         if result:
@@ -117,7 +129,7 @@ def find_latest_academic_year_with_all_grades(student_id):
             return result['year']
         else:
             # Show error message if no records are found
-            messagebox.showerror("No Records Found", "The student has not received grades for both semesters in any academic year.")
+            messagebox.showerror("No Records Found", "The student has not received grades for either semester in any academic year.")
             return None
     except mysql.connector.Error as err:
         # Handle any database errors
@@ -127,3 +139,4 @@ def find_latest_academic_year_with_all_grades(student_id):
         if dbConn.is_connected():
             cursor.close()
             dbConn.close()
+

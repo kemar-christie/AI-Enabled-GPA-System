@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # Set the background color of the root window to white
     root.configure(bg="white")
     
-    root.stdID='2400026'
+    root.stdID='2400028'
     student_navbar(root)
 
     root.mainloop()  # Start the Tkinter main loop

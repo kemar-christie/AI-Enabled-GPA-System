@@ -1,3 +1,4 @@
+# Dwyane Gibbs
 import pyswip
 from pyswip import Prolog
 

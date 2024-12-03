@@ -120,37 +120,99 @@ BEGIN
         SET MESSAGE_TEXT = 'No modules found for the student in the specified academic year.';
     END IF;
 
-    -- Check if the student has grades entered for all modules in the specified academic year
+    -- Check if the student has all grades entered for Semester 1
     IF EXISTS (
-        SELECT 1 
+        SELECT 1
         FROM enroll e
-        JOIN module m ON e.moduleID = m.moduleID
-        WHERE e.stdID = studentID 
+        WHERE e.stdID = studentID
         AND e.year = academicYear
+        AND e.semester = 1
         AND e.grade IS NULL
     ) THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Not all grades are entered for the student in the specified academic year.';
+        -- If grades are missing for Semester 1, mark it as incomplete
+        SET @semester1_complete = FALSE;
+    ELSE
+        -- All grades are entered for Semester 1
+        SET @semester1_complete = TRUE;
     END IF;
 
-    -- Retrieve the grades and credits if checks pass
-    SELECT 
-        e.semester,
-        e.grade,
-        m.num_of_credits
-    FROM 
-        enroll e
-    JOIN 
-        module m ON e.moduleID = m.moduleID
-    WHERE 
-        e.stdID = studentID
+    -- Check if the student has all grades entered for Semester 2
+    IF EXISTS (
+        SELECT 1
+        FROM enroll e
+        WHERE e.stdID = studentID
         AND e.year = academicYear
-    ORDER BY 
-        e.semester, e.moduleID;
+        AND e.semester = 2
+        AND e.grade IS NULL
+    ) THEN
+        -- If grades are missing for Semester 2, mark it as incomplete
+        SET @semester2_complete = FALSE;
+    ELSE
+        -- All grades are entered for Semester 2
+        SET @semester2_complete = TRUE;
+    END IF;
+
+    -- If both semesters have grades entered, select data for both semesters
+    IF @semester1_complete AND @semester2_complete THEN
+        SELECT 
+            e.semester,
+            e.grade,
+            m.num_of_credits
+        FROM 
+            enroll e
+        JOIN 
+            module m ON e.moduleID = m.moduleID
+        WHERE 
+            e.stdID = studentID
+            AND e.year = academicYear
+            AND (e.semester = 1 OR e.semester = 2)
+        ORDER BY 
+            e.semester, e.moduleID;
+
+    -- If only Semester 1 has all grades entered, select data for Semester 1 only
+    ELSEIF @semester1_complete AND NOT @semester2_complete THEN
+        SELECT 
+            e.semester,
+            e.grade,
+            m.num_of_credits
+        FROM 
+            enroll e
+        JOIN 
+            module m ON e.moduleID = m.moduleID
+        WHERE 
+            e.stdID = studentID
+            AND e.year = academicYear
+            AND e.semester = 1
+        ORDER BY 
+            e.moduleID;
+
+    -- If only Semester 2 has all grades entered, select data for Semester 2 only
+    ELSEIF @semester2_complete AND NOT @semester1_complete THEN
+        SELECT 
+            e.semester,
+            e.grade,
+            m.num_of_credits
+        FROM 
+            enroll e
+        JOIN 
+            module m ON e.moduleID = m.moduleID
+        WHERE 
+            e.stdID = studentID
+            AND e.year = academicYear
+            AND e.semester = 2
+        ORDER BY 
+            e.moduleID;
+
+    -- If both semesters have missing grades, raise an error
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Grades are missing for both Semester 1 and Semester 2.';
+    END IF;
 
 END //
 
 DELIMITER ;
+
 
 
 

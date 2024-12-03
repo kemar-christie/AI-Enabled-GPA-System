@@ -16,7 +16,6 @@ def view_acadmic_progress(root):
     defaultGPA=prologConn.get_default_gpa()
 
 
-
     from Database.admin_Actions import get_admin_name
     adminName = get_admin_name(root.adminID)
 
